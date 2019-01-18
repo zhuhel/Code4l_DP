@@ -22,7 +22,6 @@ source setup.sh
 
 ### Compilation
 ```bash
-mkdir build
 cd build
 make
 ```
