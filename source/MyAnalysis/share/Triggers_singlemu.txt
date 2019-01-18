@@ -1,0 +1,12 @@
+HLT_mu20_iloose_L1MU15                              2015_MC     2015_Data
+HLT_mu50                                            2016_A_B_C_D_E_F_MC      2016_A_B_C_D_E_F_Data     2015_MC     2015_Data
+HLT_mu60_0eta105_msonly                             2015_MC     2015_Data
+HLT_mu40                                            2016_A_MC     2016_A_Data
+HLT_mu24_ivarloose_L1MU15                           2016_A_MC
+HLT_mu24_iloose_L1MU15                              2016_A_MC
+HLT_mu24_ivarloose                                  2016_A_Data
+HLT_mu24_iloose                                     2016_A_Data
+HLT_mu24_ivarmedium                                 2016_B_C_D_E_MC      2016_B_C_D_E_Data
+HLT_mu24_imedium                                    2016_B_C_D_E_MC      2016_B_C_D_E_Data
+HLT_mu26_ivarmedium                                 2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
+HLT_mu26_imedium                                    2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872

@@ -1,0 +1,56 @@
+HLT_mu20_iloose_L1MU15                              2015_MC     2015_Data
+HLT_mu50                                            2016_A_B_C_D_E_F_MC      2016_A_B_C_D_E_F_Data     2015_MC     2015_Data
+HLT_mu60_0eta105_msonly                             2015_MC     2015_Data
+HLT_mu40                                            2016_A_MC     2016_A_Data
+HLT_mu24_ivarloose_L1MU15                           2016_A_MC
+HLT_mu24_iloose_L1MU15                              2016_A_MC
+HLT_mu24_ivarloose                                  2016_A_Data
+HLT_mu24_iloose                                     2016_A_Data
+HLT_mu24_ivarmedium                                 2016_B_C_D_E_MC      2016_B_C_D_E_Data
+HLT_mu24_imedium                                    2016_B_C_D_E_MC      2016_B_C_D_E_Data
+HLT_mu26_ivarmedium                                 2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
+HLT_mu26_imedium                                    2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
+HLT_2mu10                                           2015_MC     2015_Data     2016_A_MC     2016_A_Data
+HLT_mu18_mu8noL1                                    2015_MC     2015_Data
+HLT_2mu10_nomucomb                                  2016_A_MC     2016_A_Data
+HLT_mu20_mu8noL1                                    2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_mu20_nomucomb_mu6noL1_nscan03                   2016_A_B_C_MC     2016_A_B_C_Data     2016_DESMALLER_302872
+HLT_2mu14                                           2016_B_C_D_E_F_MC      2016_B_C_D_E_F_Data
+HLT_2mu14_nomucomb                                  2016_B_C_MC     2016_B_C_Data     2016_DESMALLER_302872
+HLT_mu22_mu8noL1                                    2016_E_F_MC       2016_E_F_Data     2016_DBIGGER_302872
+HLT_3mu6                                            2015_MC     2015_Data      2016_B_C_MC       2016_B_C_Data   2016_DESMALLER_302872
+HLT_mu18_2mu4noL1                                   2015_MC     2015_Data      
+HLT_3mu6_msonly                                     2015_MC     2015_Data      2016_E_F_MC       2016_E_F_Data   2016_DBIGGER_302872
+HLT_mu20_2mu4noL1                                   2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_3mu4                                            2016_A_MC       2016_A_Data
+HLT_mu6_2mu4                                        2016_A_B_C_MC     2016_A_B_C_Data      2016_DESMALLER_302872
+HLT_mu11_nomucomb_2mu4noL1_nscan03_L1MU11_2MU6      2016_A_B_C_MC     2016_A_B_C_Data      2016_DESMALLER_302872
+HLT_mu20_msonly_mu10noL1_msonly_nscan05_noComb      2016_A_B_C_MC     2016_A_B_C_Data      2016_DESMALLER_302872
+HLT_e24_lhmedium_L1EM18VH                           2015_D_MC     2015_D_Data
+HLT_e60_lhmedium                                    2015_MC     2015_Data
+HLT_e60_lhmedium_nod0                               2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_e60_medium                                      2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_e140_lhloose_nod0                               2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_e300_etcut                                      2016_A_B_C_D_E_F_MC     2016_A_B_C_D_E_F_Data
+HLT_e24_lhmedium_nod0_L1EM20VH                      2016_298687
+HLT_e120_lhloose                                    2015_MC     2015_Data
+HLT_e24_lhmedium_L1EM20VH                           2015_EtoJ_MC     2015_EtoJ_Data
+HLT_e24_lhtight_nod0_ivarloose                      2016_A_B_C_MC       2016_A_B_C_Data      2016_DESMALLER_302872
+HLT_e26_lhtight_nod0_ivarloose                      2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
+HLT_2e12_lhloose_L12EM10VH                          2015_MC     2015_Data
+HLT_2e15_lhvloose_nod0_L12EM13VH                    2016_A_B_C_MC     2016_A_B_C_Data       2016_DESMALLER_302872
+HLT_2e17_lhvloose_nod0                              2016_E_F_MC       2016_E_F_Data       2016_300540     2016_DBIGGER_302872
+HLT_e17_lhloose_2e9_lhloose                         2015_MC     2015_Data
+HLT_e17_lhloose_nod0_2e9_lhloose_nod0               2016_A_B_C_MC     2016_A_B_C_Data    2016_DESMALLER_302872
+HLT_e17_lhmedium_nod0_2e9_lhmedium_nod0             2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
+HLT_e17_lhloose_mu14                                2015_MC     2015_Data
+HLT_2e12_lhloose_mu10                               2015_MC     2015_Data     2016_E_F_MC       2016_E_F_Data     2016_DBIGGER_302872
+HLT_e12_lhloose_2mu10                               2015_MC     2015_Data     2016_E_F_MC       2016_E_F_Data     2016_DBIGGER_302872
+HLT_e24_medium_L1EM20VHI_mu8noL1                    2015_MC     2015_Data
+HLT_e7_medium_mu24                                  2015_MC     2015_Data
+HLT_e17_lhloose_nod0_mu14                           2016_A_B_C_MC    2016_A_B_C_Data    2016_DESMALLER_302872
+HLT_e24_lhmedium_nod0_L1EM20VHI_mu8noL1             2016_A_B_C_MC    2016_A_B_C_Data    2016_DESMALLER_302872
+HLT_e7_lhmedium_nod0_mu24                           2016_A_B_C_MC    2016_A_B_C_Data    2016_DESMALLER_302872
+HLT_e12_lhloose_nod0_2mu10                          2016_A_B_C_D_E_F_MC    2016_A_B_C_D_E_F_Data
+HLT_2e12_lhloose_nod0_mu10                          2016_A_B_C_D_E_F_MC    2016_A_B_C_D_E_F_Data
+HLT_e7_lhmedium_mu24                                2016_E_F_MC       2016_E_F_Data      2016_DBIGGER_302872
