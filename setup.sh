@@ -4,6 +4,7 @@ export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
 alias setupATLAS='source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh'
 setupATLAS
 
+mkdir build
 cd build
 rm -rf * 
 #acmSetup --sourcedir=../source AnalysisBase,21.2.8
