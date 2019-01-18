@@ -24,6 +24,7 @@ source setup.sh
 ```bash
 cd build
 make
+# Sometimes the 'make' may be failed, just *repeat make* it again (a known issue for cmake packages?).
 ```
 
 ### How to run
