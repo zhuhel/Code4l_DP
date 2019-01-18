@@ -12,9 +12,7 @@ https://twiki.cern.ch/twiki/bin/view/AtlasComputing/RootCoreToCMake
 
 ### Structure:
 * ./source: analysis code
-
 * ./build: compilation
-
 * ./run: run folder
 
 ### First time setup:
@@ -34,7 +32,7 @@ make
 cd run
 ./test_run.sh input.list
 ```
-==> Check your results under /output
-==> Histograms under data-hist_output
-==> Trees under data-tree_output
+* Check your results under /output
+* Histograms under /data-hist_output
+* Trees under /data-tree_output
 
