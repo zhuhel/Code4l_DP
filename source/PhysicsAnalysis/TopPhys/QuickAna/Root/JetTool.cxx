@@ -80,8 +80,8 @@ namespace ana
       m_jvt_tool ("jvt", this),
       m_jvtEffTool("jvt_eff", this),
       m_bsel_tool ("btag", this),
-      m_bsel_OR_tool ("btag_OR", this),
-      m_cleaning_tool ("cleaning", this)
+      m_bsel_OR_tool ("btag_OR", this)
+      //m_cleaning_tool ("cleaning", this)
   {
     declareProperty("EnableBTagging", m_enableBTagging = true);
     declareProperty("BTagger", m_btagger = btagAlgDefault);
@@ -219,19 +219,19 @@ namespace ana
       ATH_CHECK( m_bsel_OR_tool.initialize() );
     }
 
-    // Jet cleaning tool for decoration
-    ATH_CHECK (ASG_MAKE_ANA_TOOL (m_cleaning_tool, JetCleaningTool));
-    ATH_CHECK (m_cleaning_tool.setProperty("CutLevel", "LooseBad"));
-    ATH_CHECK (m_cleaning_tool.setProperty("DoUgly", false));
-    ATH_CHECK (m_cleaning_tool.initialize());
+    //// Jet cleaning tool for decoration
+    //ATH_CHECK (ASG_MAKE_ANA_TOOL (m_cleaning_tool, JetCleaningTool));
+    //ATH_CHECK (m_cleaning_tool.setProperty("CutLevel", "LooseBad"));
+    //ATH_CHECK (m_cleaning_tool.setProperty("DoUgly", false));
+    //ATH_CHECK (m_cleaning_tool.initialize());
 
     registerCut (SelectionStep::MET, "calibration_tool", cut_calibration_tool);
     registerCut (SelectionStep::MET, "uncertainties_tool", cut_uncertainties_tool);
     registerCut (SelectionStep::MET, "smearing_tool", cut_smearing_tool);
 
-    // Only decorate jets with the information, so that event-level
-    // cleaning can be performed later
-    registerCut (SelectionStep::MANUAL, "cleaning_tool", cut_cleaning_tool);
+    //// Only decorate jets with the information, so that event-level
+    //// cleaning can be performed later
+    //registerCut (SelectionStep::MANUAL, "cleaning_tool", cut_cleaning_tool);
 
     return StatusCode::SUCCESS;
   }
@@ -283,15 +283,15 @@ namespace ana
       jet.auxdecor<char>("IsBjet") = isbjet;
     }
 
-    // We only clean, by default, jets that might've passed our JVT selection.
-    // This is too hard-coded, ugly.
-    bool is_clean = ( jet.pt() < 20.*GeV || (jet.pt()<60.*GeV && !jvt_pass) ||
-                      m_cleaning_tool->keep(jet) );
-    cut_cleaning_tool.setPassedIf ( is_clean );
+    //// We only clean, by default, jets that might've passed our JVT selection.
+    //// This is too hard-coded, ugly.
+    //bool is_clean = ( jet.pt() < 20.*GeV || (jet.pt()<60.*GeV && !jvt_pass) ||
+    //                  m_cleaning_tool->keep(jet) );
+    //cut_cleaning_tool.setPassedIf ( is_clean );
 
-    // Also decorate the jet with the information, so that
-    // event-level cleaning can be performed later.
-    jet.auxdecor<char>("clean_jet") = is_clean;
+    //// Also decorate the jet with the information, so that
+    //// event-level cleaning can be performed later.
+    //jet.auxdecor<char>("clean_jet") = is_clean;
 
     return StatusCode::SUCCESS;
   }

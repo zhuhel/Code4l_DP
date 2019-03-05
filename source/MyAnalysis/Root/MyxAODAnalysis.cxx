@@ -165,6 +165,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   vector<float> mcEvtWts;
   double pileWeight=1.0, gen_weight = 1.0;
   double weight=1.0;
+  bool passJetCleaning = true;
 
   //cout << "ave_mu = " << ave_mu << endl;
 
@@ -187,6 +188,13 @@ EL::StatusCode MyxAODAnalysis :: execute ()
     }
   } // end if not MC
 
+  /// Change JetCleaning (a event-level cut) to the flag of eventClean in DAOD
+  /// Use working point of "LooseBad"
+  //passJetCleaning = eventInfo->DFCommonJets_eventClean_LooseBad();
+  bool isEventCleanAvailable = eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad");
+  passJetCleaning = eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad");
+  std::cout << "isEventCleanAvailable = " << isEventCleanAvailable << std::endl;
+  std::cout << "passJetCleaning = " << passJetCleaning << std::endl;
 
   VOmuon goodm,goodmiso;
   VOelectron goode,goodeiso;
@@ -548,7 +556,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       int index_muon = 0;
       int index_ele = 0;
       int index_jet = 0;
-      bool passJetCleaning = true;
       TLorentzVector p4jet1, p4jet2;
       p4jet1.SetPtEtaPhiM(-999., 0., 0., 0.);
       p4jet2.SetPtEtaPhiM(-999., 0., 0., 0.);
@@ -804,12 +811,12 @@ EL::StatusCode MyxAODAnalysis :: execute ()
           jetInfo.index = index_jet;
           jet->auxdata<int>("index") = index_jet;
 
-          if(jet->auxdata<char>("ana_select_cleaning_tool"))
-            DoCounting(sysname, CNT_obj, "jet", "Clean");
-          else {
-            passJetCleaning=false;
-            hasBadJet = true;
-          }
+          //if(jet->auxdata<char>("ana_select_cleaning_tool"))
+          //  DoCounting(sysname, CNT_obj, "jet", "Clean");
+          //else {
+          //  passJetCleaning=false;
+          //  hasBadJet = true;
+          //}
 
           goodj.push_back( jetInfo );
           index_jet++;
@@ -821,7 +828,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       int nElectrons = goode.size(); 
       int nJets = goodj.size();
 
-      SetFlag(FLAG_cut_temp,"Cleaning","All", hasBadJet==false);
+      SetFlag(FLAG_cut_temp,"Cleaning","All", passJetCleaning==true);
       SetWeight(Evt_Weight, "Cleaning","All", weight);
 
       SetFlag(FLAG_cut_temp,"FourMore","eeee", nElectrons>=4);

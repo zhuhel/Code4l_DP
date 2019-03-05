@@ -40,7 +40,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   InitStrVec(CHN,"eeee,eemm,mmmm,incl");
   //InitStrVec(STEP_cut,"xAOD,Trigger,FourMore,Quad,Kine,TrigMatch,dR4l,JPsiVeto,EleLoose,Iso,IP,OnShell,Filter,TwoJet,TwoSigJet,dEtaJJ,MJJ");
   //InitStrVec(STEP_cut,"xAOD,FourMore,Quad,Kine,nCalo,dR4l,JPsiVeto,EleLoose,IP,Iso,OnShell,Filter,TwoJet,TwoSigJet,dEtaJJ,MJJ,Cleaning");
-  InitStrVec(STEP_cut,"xAOD,FourMore,VetoPair,VetoQuad,Quad,dR4l,JPsiVeto,EleLoose,IP,Iso,Filter");
+  InitStrVec(STEP_cut,"xAOD,Cleaning,FourMore,VetoPair,VetoQuad,Quad,dR4l,JPsiVeto,EleLoose,IP,Iso,Filter");
   //InitStrVec(STEP_cut,"xAOD,FourMore,Quad,Kine,JPsiVeto,EleLoose,Iso,IP,OnShell,Filter,TwoJet,TwoSigJet,dEtaJJ,MJJ");
 
 
@@ -48,7 +48,7 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   InitObjSTEP(STEP_obj,"mu","All,Tool,Pt,Pt_Calo,Z0,D0,OverLap");
   // --> original simple step cut for obj ele
   InitObjSTEP(STEP_obj,"ele","All,Eta,Pt,ObjQ,Z0,ID,OverLap");
-  InitObjSTEP(STEP_obj,"jet","All,Eta,PtEta,OverLap,JVT,Clean");
+  InitObjSTEP(STEP_obj,"jet","All,Eta,PtEta,OverLap,JVT");
 
   //InitHistVar("mu", 100, 0, 50, "xAOD,TwoJet");
   //InitHistVar("MZZ,PtZZ,MZ1,MZ2,PtZ1,PtZ2", 1000, 0, 1000, "Filter,TwoJet,TwoSigJet,dEtaJJ,MJJ");
