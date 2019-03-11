@@ -39,7 +39,7 @@ cd run
 
 ### Grid submission
 ```bash
-calSetupRucioClients
+localSetupRucioClients
 lsetup panda
 grid_submission datasetName
 ```
