@@ -32,7 +32,16 @@ make
 cd run
 ./test_run.sh input.list
 ```
+* Check the cutflow under /cutflow
 * Check your results under /output
 * Histograms under /data-hist_output
 * Trees under /data-tree_output
 
+### Grid submission
+```bash
+calSetupRucioClients
+lsetup panda
+grid_submission datasetName
+```
+* The codes of grid submission are under ./source/MyAnalysis/util/
+* Remember to change the *user* inside the code to your own

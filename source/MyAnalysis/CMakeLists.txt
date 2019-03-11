@@ -100,6 +100,7 @@ atlas_add_library( MyAnalysisLib
 
 if( XAOD_STANDALONE )
    foreach( exec runFourLep
+            grid_submission
             grid_data16 grid_data15
             grid_data17_periodB grid_data17_periodC grid_data17_periodD 
             grid_data17_periodE grid_data17_periodF grid_data17_periodH 
