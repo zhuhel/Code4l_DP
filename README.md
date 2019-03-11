@@ -44,4 +44,4 @@ lsetup panda
 grid_submission datasetName
 ```
 * The codes of grid submission are under ./source/MyAnalysis/util/
-* Remember to change the *user* inside the code to your own
+* Remember to change the *User* inside the code to your own
