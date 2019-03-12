@@ -979,8 +979,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       int best_i = -1, event_type=-99;
       for(int i=0; i<(int)quads.size(); i++) {
 
-        SetFlag(FLAG_cut_temp,"Quad", quads[i].type, 1);
         SetFlag(FLAG_cut_temp,"Quad", "incl", 1);
+        SetWeight(Evt_Weight,"Quad","incl", weight*quad[i].weight);
+        SetFlag(FLAG_cut_temp,"Quad", quads[i].type, 1);
         if((quads[i].type=="mmmm" && !has4mu) || (quads[i].type=="eeee" && !has4e) || (quads[i].type=="eemm" && !has2e2mu)) SetWeight(Evt_Weight,"Quad",quads[i].type, weight*quads[i].weight);
 
         if(quads[i].type=="mmmm") has4mu=true;
@@ -1059,8 +1060,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         }
 
         passdR = mindR1>0.2 && mindR2>0.2;
-        SetFlag(FLAG_cut_temp,"dR4l", best_Quad.type, passdR);
         SetFlag(FLAG_cut_temp,"dR4l", "incl", passdR);
+        SetWeight(Evt_Weight,"dR4l","incl", weight*best_Quad.weight);
+        SetFlag(FLAG_cut_temp,"dR4l", best_Quad.type, passdR);
         SetWeight(Evt_Weight,"dR4l",best_Quad.type, weight*best_Quad.weight);
 
 
@@ -1072,8 +1074,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         if(best_Quad.pair[0].Z.M()<5.e3) passJPsiVeto=false;
         if(best_Quad.pair[1].Z.M()<5.e3) passJPsiVeto=false;
 
-        SetFlag(FLAG_cut_temp,"JPsiVeto", best_Quad.type, passJPsiVeto);
         SetFlag(FLAG_cut_temp,"JPsiVeto", "incl", passJPsiVeto);
+        SetWeight(Evt_Weight,"JPsiVeto", "incl" , weight*best_Quad.weight);
+        SetFlag(FLAG_cut_temp,"JPsiVeto", best_Quad.type, passJPsiVeto);
         SetWeight(Evt_Weight,"JPsiVeto",best_Quad.type, weight*best_Quad.weight);
 
         bool pass_Iso=true;
