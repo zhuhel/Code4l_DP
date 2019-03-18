@@ -40,7 +40,8 @@ namespace WPType{
       _HZZ4l,
       _SMZZ4l,
       _ZHinv,
-      _Hmumu
+      _Hmumu,
+      _DarkPh
    };
 }
 

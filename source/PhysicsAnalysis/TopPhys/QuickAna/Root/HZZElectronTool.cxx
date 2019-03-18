@@ -92,7 +92,7 @@ namespace ana
     registerCut (SelectionStep::MET, "selectionTool", cut_selectionTool);
     registerCut (SelectionStep::MET, "Z0", cut_Z0);
 
-    if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l) {
+    if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l && m_wp !=  WPType::_DarkPh) {
       registerCut (SelectionStep::MET, "Iso", cut_Iso);
       registerCut (SelectionStep::MET, "D0",  cut_D0);
     }
@@ -134,7 +134,7 @@ namespace ana
     //electron.auxdata<char> ("ana_select_isolationTool") =
     //  (bool) m_isolationTool->accept(electron);
     
-    if(m_wp == WPType::_SMZZ4l)
+    if(m_wp == WPType::_SMZZ4l || m_wp == WPType::_DarkPh)
       electron.auxdecor<char>("PassIso") = (bool)m_isolationTool->accept(electron);
 
 
@@ -163,7 +163,7 @@ namespace ana
     electron.auxdata<double>("d0value") = d0;
     electron.auxdata<double>("z0value") = z0;
 
-    if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l) {
+    if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l && m_wp != WPType::_DarkPh) {
       cut_D0.setPassedIf (fabs(d0sig)<5.);
       cut_Iso.setPassedIf (m_isolationTool->accept(electron));
     }
@@ -233,9 +233,9 @@ namespace ana
   }
 
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzz4l", makeHZZElectronTool (args))
-  //QUICK_ANA_ELECTRON_DEFINITION_MAKER ("smzz4l", makeHZZElectronTool (args, "LooseAndBLayerLLH", WPType::_SMZZ4l))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("smzz4l", makeHZZElectronTool (args, "LooseLLH", WPType::_SMZZ4l))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("smzz4l_veryloose", makeHZZElectronTool (args, "VLooseLLH", WPType::_SMZZ4l))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_loose", makeHZZElectronTool (args, "LooseLLH", WPType::_ZHinv, "Loose"))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_medium", makeHZZElectronTool (args, "MediumLLH", WPType::_ZHinv, "Loose"))
+  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("darkph", makeHZZElectronTool (args, "LooseLLH", WPType::_DarkPh))
 }

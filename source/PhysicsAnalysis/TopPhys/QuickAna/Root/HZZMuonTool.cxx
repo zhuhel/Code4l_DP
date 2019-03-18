@@ -67,9 +67,9 @@ namespace ana
     registerCut (SelectionStep::MET, "D0", cut_D0);
     registerCut (SelectionStep::MET, "Z0", cut_Z0);
 
-//    if(m_wp == WPType::_SMZZ4l) {
-//      registerCut (SelectionStep::MET, "Iso", cut_Iso); 
-//    }
+    if(m_wp == WPType::_DarkPh) {
+      registerCut (SelectionStep::MET, "Eta", cut_Eta); 
+    }
 
     if(m_wp == WPType::_ZHinv || m_wp == WPType::_Hmumu) {
       registerCut (SelectionStep::MET, "CB", cut_CB);
@@ -122,7 +122,7 @@ namespace ana
       if (muon.muonType() != xAOD::Muon::MuonStandAlone) {
         cut_Z0.setPassedIf (fabs(z0sin)<0.5);
 
-        if(m_wp == WPType::_SMZZ4l) {
+        if(m_wp == WPType::_SMZZ4l || m_wp == WPType::_DarkPh) {
           cut_D0.setPassedIf (fabs(d0)<1.);
         }else {
           cut_D0.setPassedIf (fabs(d0sig)<3.);
@@ -144,19 +144,20 @@ namespace ana
           cut_Pt_Calo.setPassedIf (pt>7.e3);
         }
 
-        //if(type==0 || type==2) {
-        //  cut_Pt.setPassedIf (pt>6.e3);
-        //}
-
-        //if(type==1) {
-        //  cut_Pt.setPassedIf (pt>6.e3);
-        //}
-
-        //if(type==3 && muon.author()==xAOD::Muon::CaloTag) {
-        //   cut_Pt.setPassedIf (pt>15.e3);
-        //}
       }
       
+      if(m_wp == WPType::_DarkPh) {
+        muon.auxdecor<char>("PassIso") = (bool)m_isolationTool->accept(muon);
+        cut_Pt.setPassedIf (pt>7.e3);
+        cut_Eta.setPassedIf (fabs(eta)<2.7);
+        if(type==xAOD::Muon::CaloTagged) {
+          cut_Pt_Calo.setPassedIf (pt>15.e3);
+        }
+        else {
+          cut_Pt_Calo.setPassedIf (pt>7.e3);
+        }
+      }
+
       if(m_wp == WPType::_ZHinv) {
         cut_Iso.setPassedIf (m_isolationTool->accept(muon));
         cut_CB.setPassedIf (type==0);
@@ -262,4 +263,5 @@ namespace ana
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_loose", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_ZHinv, "Loose"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_medium", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_ZHinv, "Loose"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hmumu", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_Hmumu, "LooseTrackOnly"))
+  QUICK_ANA_MUON_DEFINITION_MAKER ("darkph", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_DarkPh))
 }
