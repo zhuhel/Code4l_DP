@@ -45,9 +45,9 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
 
 
   // --> original simple step cut for obj mu
-  InitObjSTEP(STEP_obj,"mu","All,Tool,Pt,Pt_Calo,Z0,D0,OverLap");
+  InitObjSTEP(STEP_obj,"mu","All,Pt,Eta,Tool,Z0,D0,OverLap");
   // --> original simple step cut for obj ele
-  InitObjSTEP(STEP_obj,"ele","All,Eta,Pt,ObjQ,Z0,ID,OverLap");
+  InitObjSTEP(STEP_obj,"ele","All,Pt,Eta,ObjQ,Z0,ID,OverLap");
   InitObjSTEP(STEP_obj,"jet","All,Eta,PtEta,OverLap,JVT");
 
   //InitHistVar("mu", 100, 0, 50, "xAOD,TwoJet");
@@ -165,8 +165,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   if(!isMC) quickAna->isDataFlag="true";
   quickAna->eventinfoDef = "default";
   quickAna->triggerDef = TRIG_list;
-  quickAna->muonDef="smzz4l";
-  quickAna->electronDef="smzz4l_veryloose smzz4l hzhinv_medium";
+  quickAna->muonDef="darkph";
+  quickAna->electronDef="darkph hzhinv_medium";
+  //quickAna->muonDef="smzz4l";
+  //quickAna->electronDef="smzz4l_veryloose smzz4l hzhinv_medium";
   quickAna->jetKine = "pt > 30e3 && eta < 4.5 && eta >-4.5";
   quickAna->jetDef="antikt04_noBtag"; // no btag
   //quickAna->jetDef="antikt04_HZZ"; // btag setup in HZZ analysis
