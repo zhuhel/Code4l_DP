@@ -1,15 +1,9 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2019 CERN for the benefit of the ATLAS collaboration
 */
 
-//        Copyright Iowa State University 2014.
-//                  Author: Nils Krumnack
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+/// @author Nils Krumnack
 
-// Please feel free to contact me (nils.erik.krumnack@cern.ch) for bug
-// reports, feature suggestions, praise and complaints.
 
 
 // An overview of MC15 recommendations from the following talk and note:
@@ -40,6 +34,7 @@
 #include <RootCoreUtils/Assert.h>
 
 #include <METUtilities/METMaker.h>
+#include <METUtilities/METSignificance.h>
 #include <METInterface/IMETSystematicsTool.h>
 #ifdef ROOTCORE
 #include <METUtilities/METSystematicsTool.h>
@@ -48,8 +43,6 @@
 
 // For the fJVT working point
 #include <JetMomentTools/JetForwardJvtTool.h>
-
-static const float GeV = 1000.;
 
 //
 // method implementations
@@ -63,10 +56,13 @@ namespace ana
       m_doFJVT(false),
       m_metutil ("maker", this),
       m_metSystTool ("systTool", this),
+      m_metSigni ("metSigni", this),
       m_fjvtTool ("fjvtTool", this),
       m_accessor ("dummy")
   {
     // Note: these are only used with METMaker
+    declareProperty("DoPUmetsig", m_doPUmetsig=true);
+    declareProperty("DoPFlow", m_doPFlow=false);
     declareProperty("IncludeTauTerm", m_includeTauTerm=true);
     declareProperty("DoTST", m_doTST=true);
     declareProperty("DoJVTCut", m_doJVTCut=true);
@@ -112,7 +108,7 @@ namespace ana
   inputTypes () const
   {
     return (1 << OBJECT_ELECTRON) | (1 << OBJECT_PHOTON) | (1 << OBJECT_TAU) |
-           (1 << OBJECT_MUON) | (1 << OBJECT_JET);
+      (1 << OBJECT_MUON) | (1 << OBJECT_JET) | (1 << OBJECT_PFLOW_JET) | (1 << OBJECT_EVENTINFO);
   }
 
 
@@ -132,12 +128,15 @@ namespace ana
 
     m_isData = conf.isData();
     m_isAF2  = conf.isAFII();
-    m_jetContainer = conf.inputName (OBJECT_JET);
+    if (m_doPFlow) m_jetContainer = conf.inputName (OBJECT_PFLOW_JET);
+    else m_jetContainer = conf.inputName (OBJECT_JET);
+
     if (m_jetContainer.empty())
     {
-      ATH_MSG_ERROR ("can't use MET without jets");
-      return StatusCode::FAILURE;
+       ATH_MSG_ERROR ("can't use MET without jets");
+       return StatusCode::FAILURE;
     }
+
     return StatusCode::SUCCESS;
   }
 
@@ -151,15 +150,27 @@ namespace ana
     ATH_CHECK( ASG_MAKE_ANA_TOOL(m_metutil, met::METMaker) );
     ATH_CHECK( m_metutil.setProperty("ORCaloTaggedMuons", m_doORCaloTaggedMuons) );
     ATH_CHECK( m_metutil.setProperty("DoSetMuonJetEMScale", m_doMuJetEMScale) );
+    ATH_CHECK( m_metutil.setProperty("DoPFlow", m_doPFlow) );
 
     if (m_jetSelection!="passFJVT"){
       ATH_CHECK( m_metutil.setProperty("JetSelection", m_jetSelection) );
+ 
+      if (m_doPUmetsig) {
+        ATH_CHECK( ASG_MAKE_ANA_TOOL( m_fjvtTool, JetForwardJvtTool) );
+        ATH_CHECK( m_fjvtTool.setProperty("UseTightOP", true) ); // Tight
+        ATH_CHECK( m_fjvtTool.setProperty("EtaThresh", 2.5) );   //Eta dividing central from forward jets
+        ATH_CHECK( m_fjvtTool.setProperty("ForwardMaxPt", 120.0e3) ); //Max Pt to define fwdJets for JVT
+        ATH_CHECK( m_fjvtTool.initialize() );
+      }
     } else {
       // Special forward JVT working point - requires the forward JVT tool to be enabled!
       m_doFJVT = true;
       ATH_CHECK( m_metutil.setProperty("JetRejectionDec", m_jetSelection) );
       ATH_CHECK( ASG_MAKE_ANA_TOOL( m_fjvtTool, JetForwardJvtTool) );
-      ATH_CHECK( m_fjvtTool.setProperty("CentralMaxPt",60e3) );
+      ATH_CHECK( m_fjvtTool.setProperty("UseTightOP", true) ); 
+      ATH_CHECK( m_fjvtTool.setProperty("EtaThresh", 2.5) );
+      ATH_CHECK( m_fjvtTool.setProperty("ForwardMaxPt", 120.0e3) ); 
+      ATH_CHECK( m_fjvtTool.initialize() );
     }
 
     if (m_uniqueFrac>=0.) ATH_CHECK( m_metutil.setProperty("JetMinEFrac", m_uniqueFrac) );
@@ -190,11 +201,25 @@ namespace ana
       if (!m_doTST) ATH_CHECK( m_metSystTool.setProperty("ConfigSoftTrkFile","") );
       // No calo soft term systematics recommendations, so an empty string for now
       if (m_doTST) ATH_CHECK( m_metSystTool.setProperty("ConfigSoftCaloFile", "") );
-      if (m_doTrackMET) ATH_CHECK( m_metSystTool.setProperty("ConfigJetTrkFile","JetTrackSyst.config") );
+      if (m_doPFlow) ATH_CHECK( m_metSystTool.setProperty("ConfigSoftTrkFile", "TrackSoftTerms-pflow.config") );
+      if (m_doTrackMET)
+      {
+        ANA_MSG_WARNING ("no ConfigJetTrkFile present, setting empty file for now");
+        ATH_CHECK( m_metSystTool.setProperty("ConfigJetTrkFile","") );
+        // ATH_CHECK( m_metSystTool.setProperty("ConfigJetTrkFile","JetTrackSyst.config") );
+      }
       // No other non-default settings
       ATH_CHECK( m_metSystTool.initialize() );
       registerTool(&*m_metSystTool);
     }
+
+    ATH_CHECK( ASG_MAKE_ANA_TOOL(m_metSigni, met::METSignificance) );   
+    ATH_CHECK( m_metSigni.setProperty("SoftTermParam", met::Random) );
+    ATH_CHECK( m_metSigni.setProperty("TreatPUJets",  m_doPUmetsig) );
+    ATH_CHECK( m_metSigni.setProperty("DoPhiReso",  true) );
+    ATH_CHECK( m_metSigni.setProperty("IsAFII",   m_isAF2) );
+    ATH_CHECK( m_metSigni.setProperty("JetCollection",  m_jetContainer.substr(0, m_jetContainer.size()-4)) );
+    ATH_CHECK( m_metSigni.retrieve() ); 
 
     return StatusCode::SUCCESS;
   }
@@ -240,11 +265,19 @@ namespace ana
     // Setup ghost association for mu-jet OR
     //if(m_doMuJetOR || m_doMuJetEMScale) {
     if(m_doORCaloTaggedMuons || m_doMuJetEMScale) {
-      if(!objects.muons() || !objects.jets()) {
-        ATH_MSG_ERROR("Configured mu-jet OR for MET but container(s) NULL!");
-        return StatusCode::FAILURE;
+      if (!m_doPFlow) {
+        if(!objects.muons() || !objects.jets()) {
+          ATH_MSG_ERROR("Configured mu-jet OR for MET but container(s) NULL!");
+          return StatusCode::FAILURE;
+        }
+        met::addGhostMuonsToJets( *objects.muons(), *objects.jets() );
+      } else {
+        if(!objects.muons() || !objects.pflow_jets()) {
+          ATH_MSG_ERROR("Configured mu-jet OR for MET but container(s) NULL!");
+          return StatusCode::FAILURE;
+        }
+        met::addGhostMuonsToJets( *objects.muons(), *objects.pflow_jets() );
       }
-      met::addGhostMuonsToJets( *objects.muons(), *objects.jets() );
     }
 
     // TODO: remove hardcoded options and strings
@@ -277,7 +310,7 @@ namespace ana
       xAOD::PhotonContainer metphotons(SG::VIEW_ELEMENTS);
       for (auto ph : *objects.photons())
       {
-        if (m_accessor (*ph))
+        if (m_accessor (*ph) && ph->pt()>20e3 && fabs(ph->eta())<2.47)
         {
           metphotons.push_back(ph);
         }
@@ -320,11 +353,20 @@ namespace ana
     }
 
     // Rebuild jet and soft term
-    if (!objects.jets())
+    if (m_doPFlow)
+    {
+       if (!objects.pflow_jets()) 
+       {
+          ATH_MSG_WARNING("Invalid jet container specified for MET rebuilding!");
+          return StatusCode::SUCCESS;
+       } else if (m_doFJVT || m_doPUmetsig) {
+          m_fjvtTool->modify( *objects.pflow_jets() );
+       }
+    } else if (!objects.jets())
     {
       ATH_MSG_WARNING("Invalid jet container specified for MET rebuilding!");
       return StatusCode::SUCCESS;
-    } else if (m_doFJVT) {
+    } else if (m_doFJVT || m_doPUmetsig) {
       // Make sure for forward jet working point we apply the fJVT tool
       // This always returns zero, so no need for value checking right now
       m_fjvtTool->modify( *objects.jets() );
@@ -336,8 +378,10 @@ namespace ana
                                             metcore, metMap, m_doJVTCut));
     } else
     {
-      ATH_CHECK (m_metutil->rebuildJetMET("RefJet", softTerm, met, objects.jets(),
-                                          metcore, metMap, m_doJVTCut));
+      if (!m_doPFlow) ATH_CHECK (m_metutil->rebuildJetMET("RefJet", softTerm, met, objects.jets(),
+                                                          metcore, metMap, m_doJVTCut));
+      else            ATH_CHECK (m_metutil->rebuildJetMET("RefJet", softTerm, met, objects.pflow_jets(),
+                                                          metcore, metMap, m_doJVTCut));
     }
 
     if (m_isData == false)
@@ -350,6 +394,11 @@ namespace ana
     }
 
     ATH_CHECK( m_metutil->buildMETSum("Final", met, (*met)[softTerm]->source()) );
+    
+    ATH_CHECK( m_metSigni->varianceMET(met, objects.eventinfo()->averageInteractionsPerCrossing(), "RefJet", softTerm, "Final"));
+
+    std::string met_signi = "met_signi_"+m_jetSelection;
+    objects.eventinfo()->auxdata<float>(met_signi) = m_metSigni->GetSignificance();
 
     return StatusCode::SUCCESS;
   }
@@ -358,12 +407,14 @@ namespace ana
 
   // Function for instantiating a MetTool
   StatusCode makeMetTool (DefinitionArgs& args,
+                          const bool doPUmetsig=true,
+                          const bool doPFlow=false,
                           const bool includeTauTerm=true,
                           const bool doTST=true,
                           const bool doJVTCut=true,
                           const bool doTrackMet=false,
                           const bool doORCaloTaggedMuons=true,
-                          const bool doMuJetEMScale=false,
+                          const bool doMuJetEMScale=true,
                           const std::string& jetSelection="Tight",
                           const double uniqueFrac=-1.,
                           const double jetCut=-1.)
@@ -372,6 +423,8 @@ namespace ana
 
     std::unique_ptr<MetTool> metTool
       (new MetTool (args.prefix()));
+    ANA_CHECK( metTool->setProperty("DoPUmetsig", doPUmetsig) );
+    ANA_CHECK( metTool->setProperty("DoPFlow", doPFlow) );
     ANA_CHECK( metTool->setProperty("IncludeTauTerm", includeTauTerm) );
     ANA_CHECK( metTool->setProperty("DoTST", doTST) );
     ANA_CHECK( metTool->setProperty("DoJVTCut", doJVTCut) );
@@ -388,14 +441,15 @@ namespace ana
 
   // Macro for creating a MetTool using the provided function
   QUICK_ANA_MET_DEFINITION_MAKER( "default",   makeMetTool(args) )
-  QUICK_ANA_MET_DEFINITION_MAKER( "noTauTerm", makeMetTool(args,false) )
-  QUICK_ANA_MET_DEFINITION_MAKER( "trackmet",  makeMetTool(args,true,true,true,true) )
-  QUICK_ANA_MET_DEFINITION_MAKER( "susy2L",    makeMetTool(args,true,true,true,false,true,true) )
-  QUICK_ANA_MET_DEFINITION_MAKER( "metZHinv",  makeMetTool(args,true,true,true,false,true,true,"Loose") )
-  QUICK_ANA_MET_DEFINITION_MAKER( "noTauCST",  makeMetTool(args,false,false) )
-  QUICK_ANA_MET_DEFINITION_MAKER( "CST",       makeMetTool(args,true,false,false) )
+  QUICK_ANA_MET_DEFINITION_MAKER( "pflow",     makeMetTool(args,true,true,true,true,true,false,true,true,"Tight") )
+  QUICK_ANA_MET_DEFINITION_MAKER( "noTauTerm", makeMetTool(args,true,false,false) )
+  QUICK_ANA_MET_DEFINITION_MAKER( "trackmet",  makeMetTool(args,true,false,true,true,true,true) )
+  QUICK_ANA_MET_DEFINITION_MAKER( "susy2L",    makeMetTool(args,true,false,true,true,true,false,true,true) )
+  QUICK_ANA_MET_DEFINITION_MAKER( "noTauCST",  makeMetTool(args,true,false,false,false) )
+  QUICK_ANA_MET_DEFINITION_MAKER( "CST",       makeMetTool(args,true,false,true,false,false) )
 
-  QUICK_ANA_MET_DEFINITION_MAKER( "Tight",    makeMetTool(args,true,true,true,false,true,false,"Tight") )
-  QUICK_ANA_MET_DEFINITION_MAKER( "passFJVT",    makeMetTool(args,true,true,true,false,true,false,"passFJVT") )
+  QUICK_ANA_MET_DEFINITION_MAKER( "loose",    makeMetTool(args,true,false,true,true,true,false,true,true,"Loose") )
+  QUICK_ANA_MET_DEFINITION_MAKER( "Tight",    makeMetTool(args,true,false,true,true,true,false,true,false,"Tight") )
+  QUICK_ANA_MET_DEFINITION_MAKER( "passFJVT",    makeMetTool(args,false,true,true,true,false,true,false,"passFJVT") )
 
 }

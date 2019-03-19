@@ -94,9 +94,6 @@ namespace ana
   correctObject (xAOD::Electron& electron)
   {
     ATH_MSG_DEBUG("correctObject");
-    //const Root::TAccept& passLHLoose = m_likelihoodTool_loose->accept( electron );
-    //const Root::TAccept& passLHMedium = m_likelihoodTool_medium->accept( electron );
-    //const Root::TAccept& passLHTight = m_likelihoodTool_tight->accept( electron );
     const Root::TAccept& passLHLoose = m_likelihoodTool_loose->accept( &electron );
     const Root::TAccept& passLHMedium = m_likelihoodTool_medium->accept( &electron );
     const Root::TAccept& passLHTight = m_likelihoodTool_tight->accept( &electron );
@@ -140,7 +137,7 @@ namespace ana
 
     // Initialize the calibration tool
     ATH_CHECK (ASG_MAKE_ANA_TOOL (m_calibration, CP::EgammaCalibrationAndSmearingTool));
-    ATH_CHECK (m_calibration.setProperty ("ESModel", "es2017_R21_PRE"));
+    ATH_CHECK (m_calibration.setProperty ("ESModel", "es2017_R21_v1"));
     ATH_CHECK (m_calibration.setProperty ("decorrelationModel", "1NP_v1"));
     ATH_CHECK (m_calibration.setProperty ("useAFII", m_isAF2?1:0));
     ATH_CHECK( m_calibration.initialize() );
@@ -384,9 +381,8 @@ namespace ana
     const int effDataType = m_isAF2? 3 : 1;
 
     // Calib file directory
-    //const std::string egMapFile = "ElectronEfficiencyCorrection/2015_2016/rel20.7/Moriond_February2017_v1/map0.txt";
-    const std::string egMapFile = "ElectronEfficiencyCorrection/2015_2017/rel21.2/Summer2017_Prerec_v1/map0.txt";
-
+    //const std::string egMapFile = "ElectronEfficiencyCorrection/2015_2017/rel21.2/Consolidation_February2018_v2/map6.txt";
+    const std::string egMapFile = "ElectronEfficiencyCorrection/2015_2017/rel21.2/Moriond_February2018_v2/map6.txt";
     // Initialize the AsgElectronEfficiencyCorrectionTool for reco
     ATH_CHECK( ASG_MAKE_ANA_TOOL(m_efficiencyTool_reco, AsgElectronEfficiencyCorrectionTool) );
     // Reco scale factors - currently need to set this file by hand

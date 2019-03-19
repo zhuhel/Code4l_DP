@@ -225,6 +225,16 @@ namespace ana
       override
 #endif
       ;
+    virtual xAOD::JetContainer* truthjets () const
+#ifndef __CINT__
+      override
+#endif
+      ;
+     virtual xAOD::JetContainer* pflow_jets () const
+#ifndef __CINT__
+      override
+#endif
+      ;
     virtual xAOD::JetContainer* fat_jets () const
 #ifndef __CINT__
         override

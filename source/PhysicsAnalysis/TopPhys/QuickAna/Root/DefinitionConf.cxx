@@ -63,6 +63,8 @@ namespace ana
     {
       std::map<std::string,std::string> result;
       result["jets"] = "antikt04";
+      result["truthjets"]= "truth";
+      result["pfJets"] = "pflow_HZZ";
       result["fatJets"] = "antikt10";
       result["electrons"] = "medium";
       result["photons"] = "tight";
@@ -378,6 +380,10 @@ namespace ana
                               config.eventSelectDef, ""));
     ANA_CHECK (makeObjectConf (confList, OBJECT_JET,
                               config.jetDef, config.jetKine));
+    ANA_CHECK (makeObjectConf (confList, OBJECT_TRUTHJET,
+                              config.truthjetDef, config.truthjetKine));
+    ANA_CHECK (makeObjectConf (confList, OBJECT_PFLOW_JET,
+                              config.pfJetDef, config.pfJetKine));
     ANA_CHECK (makeObjectConf (confList, OBJECT_FAT_JET,
                               config.fatJetDef, config.fatJetKine));
     ANA_CHECK (makeObjectConf (confList, OBJECT_PHOTON,
@@ -392,6 +398,8 @@ namespace ana
                               config.metDef, ""));
     ANA_CHECK (makeObjectConf (confList, OBJECT_MET2,
                               config.met2Def, ""));
+    ANA_CHECK (makeObjectConf (confList, OBJECT_CLEANING,
+                              config.cleanDef, ""));
     ANA_CHECK (makeObjectConf (confList, OBJECT_OVERLAP_REMOVAL,
                               config.orDef, ""));
     ANA_CHECK (makeObjectConf (confList, OBJECT_TRIGGER,

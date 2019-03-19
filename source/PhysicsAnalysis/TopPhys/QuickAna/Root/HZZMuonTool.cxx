@@ -66,10 +66,7 @@ namespace ana
     registerCut (SelectionStep::MET, "Pt_Calo", cut_Pt_Calo);
     registerCut (SelectionStep::MET, "D0", cut_D0);
     registerCut (SelectionStep::MET, "Z0", cut_Z0);
-
-    if(m_wp == WPType::_DarkPh) {
-      registerCut (SelectionStep::MET, "Eta", cut_Eta); 
-    }
+    registerCut (SelectionStep::MET, "Eta", cut_Eta);
 
     if(m_wp == WPType::_ZHinv || m_wp == WPType::_Hmumu) {
       registerCut (SelectionStep::MET, "CB", cut_CB);
@@ -115,6 +112,9 @@ namespace ana
       ATH_CHECK( evtStore()->retrieve( evt, "EventInfo" ) );
       d0sig = (muon.primaryTrackParticle() && evt) ? xAOD::TrackingHelpers::d0significance( muon.primaryTrackParticle() , evt->beamPosSigmaX(), evt->beamPosSigmaY(), evt->beamPosSigmaXY() ) : -999.0;
     }
+    else{
+     d0sig=0;
+    }
     muon.auxdata<double>("d0Sig") = d0sig;
 
     if(m_wp != WPType::_HZZ4l) {
@@ -135,8 +135,14 @@ namespace ana
 
       if(m_wp == WPType::_SMZZ4l) {
         muon.auxdecor<char>("PassIso") = (bool)m_isolationTool->accept(muon);
-
+          //ATH_CHECK( ASG_MAKE_ANA_TOOL(m_mymuonSelection, CP::MuonSelectionTool) );
+          //CP::MuonSelectionTool m_mymuonSelection("MuonSelection");
+          //ATH_CHECK(m_mymuonSelection.msg().setLevel( MSG::VERBOSE ));
+          //ATH_CHECK(m_mymuonSelection.setProperty( "MuQuality", 1));
+          //ATH_CHECK(m_mymuonSelection.initialize());
+          //cut_ID_LowPt.setPassedIf (m_myselection->accept(muon));
         cut_Pt.setPassedIf (pt>7.e3);
+        cut_Eta.setPassedIf (fabs(eta)<2.7);
         if(type==xAOD::Muon::CaloTagged) {
           cut_Pt_Calo.setPassedIf (pt>15.e3);
         }
@@ -148,16 +154,9 @@ namespace ana
       
       if(m_wp == WPType::_DarkPh) {
         muon.auxdecor<char>("PassIso") = (bool)m_isolationTool->accept(muon);
-        cut_Pt.setPassedIf (pt>7.e3);
+        cut_Pt.setPassedIf (pt>2.5e3);
         cut_Eta.setPassedIf (fabs(eta)<2.7);
-        if(type==xAOD::Muon::CaloTagged) {
-          cut_Pt_Calo.setPassedIf (pt>15.e3);
-        }
-        else {
-          cut_Pt_Calo.setPassedIf (pt>7.e3);
-        }
       }
-
       if(m_wp == WPType::_ZHinv) {
         cut_Iso.setPassedIf (m_isolationTool->accept(muon));
         cut_CB.setPassedIf (type==0);
@@ -179,11 +178,11 @@ namespace ana
     if(type==0 || type==2) {
       cut_D0.setPassedIf (fabs(d0)<1.);
       cut_Z0.setPassedIf (fabs(z0sin)<0.5);
-      cut_Pt.setPassedIf (pt>5.e3);
+      cut_Pt.setPassedIf (pt>7.e3);
     }
 
     if(type==1) {
-      cut_Pt.setPassedIf (pt>5.e3);
+      cut_Pt.setPassedIf (pt>7.e3);
       cut_D0.setPassedIf (true);
       cut_Z0.setPassedIf (true);
     }
@@ -210,7 +209,7 @@ namespace ana
     if      (quality==xAOD::Muon::Loose)  my_idStr = "Loose";
     else if (quality==xAOD::Muon::Medium) my_idStr = "Medium";
     else if (quality==xAOD::Muon::Tight)  my_idStr = "Tight";
-
+    //else if (quality==xAOD::Muon::VeryLoose)  my_idStr = "LowPtEfficiency";
 
     if (args.firstWP())
     {
@@ -262,6 +261,7 @@ namespace ana
   QUICK_ANA_MUON_DEFINITION_MAKER ("smzz4l", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_SMZZ4l))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_loose", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_ZHinv, "Loose"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_medium", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_ZHinv, "Loose"))
+ //QUICK_ANA_MUON_DEFINITION_MAKER ("smzz4l_LowPt", makeHZZMuonTool (args, xAOD::Muon::VeryLoose, WPType::_SMZZ4l))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hmumu", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_Hmumu, "LooseTrackOnly"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("darkph", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_DarkPh))
 }

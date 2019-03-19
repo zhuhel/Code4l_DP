@@ -15,6 +15,23 @@
 #include <xAODMuon/MuonContainer.h>
 #include <xAODMuon/MuonAuxContainer.h>
 #include "xAODEventInfo/EventInfo.h"
+#include <EventLoop/Job.h>
+#include <EventLoop/StatusCode.h>
+#include <EventLoop/Worker.h>
+#include <EventLoop/OutputStream.h>
+#include <EventLoopAlgs/NTupleSvc.h>
+#include <EventLoopAlgs/AlgSelect.h>
+
+#include "MyAnalysis/MyxAODAnalysis.h"
+#include "MyAnalysis/OBJ_Base.h"
+
+#include "xAODTracking/VertexContainer.h"
+#include "xAODTracking/TrackParticlexAODHelpers.h"
+#include "xAODJet/JetContainer.h"
+#include <xAODMuon/Muon.h>
+#include <xAODMuon/MuonContainer.h>
+#include <xAODMuon/MuonAuxContainer.h>
+#include "xAODEventInfo/EventInfo.h"
 
 #include "xAODTruth/TruthEvent.h"
 #include "xAODTruth/TruthEventContainer.h"
@@ -32,6 +49,8 @@
 #include "Counting.h"
 
 
+
+
 using namespace std;
 
 // this is needed to distribute the algorithm to the workers
@@ -41,107 +60,107 @@ ClassImp(MyxAODAnalysis)
 
 MyxAODAnalysis :: MyxAODAnalysis ()
 {
-  // Here you put any code for the base initialization of variables,
-  // e.g. initialize all pointers to 0.  Note that you should only put
-  // the most basic initialization here, since this method will be
-  // called on both the submission and the worker node.  Most of your
-  // initialization code will go into histInitialize() and
-  // initialize().
-  //m_setSysList=new std::vector<std::string>();
+    // Here you put any code for the base initialization of variables,
+    // e.g. initialize all pointers to 0.  Note that you should only put
+    // the most basic initialization here, since this method will be
+    // called on both the submission and the worker node.  Most of your
+    // initialization code will go into histInitialize() and
+    // initialize().
+    //m_setSysList=new std::vector<std::string>();
 }
 
 MyxAODAnalysis :: MyxAODAnalysis (string treename="physics")
 {
-
-  set = treename;
-  //m_setSysList=new std::vector<std::string>();
-
+    
+    set = treename;
+    //m_setSysList=new std::vector<std::string>();
+    
 }
 
 
 
 EL::StatusCode MyxAODAnalysis :: setupJob (EL::Job& job)
 {
-  // Here you put code that sets up the job on the submission object
-  // so that it is ready to work with your algorithm, e.g. you can
-  // request the D3PDReader service or add output files.  Any code you
-  // put here could instead also go into the submission script.  The
-  // sole advantage of putting it here is that it gets automatically
-  // activated/deactivated when you add/remove the algorithm from your
-  // job, which may or may not be of value to you.
-  EL::OutputStream output1("tree_output");
-  job.outputAdd (output1);
-
-  EL::OutputStream output2("hist_output");
-  job.outputAdd (output2);
-
-  EL::OutputStream output3("cutflow");
-  job.outputAdd (output3);
-
-
-
-
-  job.useXAOD ();
-
-  // let's initialize the algorithm to use the xAODRootAccess package
-  xAOD::Init( "MyxAODAnalysis" ).ignore(); // call before opening first file
-
-  return EL::StatusCode::SUCCESS;
+    // Here you put code that sets up the job on the submission object
+    // so that it is ready to work with your algorithm, e.g. you can
+    // request the D3PDReader service or add output files.  Any code you
+    // put here could instead also go into the submission script.  The
+    // sole advantage of putting it here is that it gets automatically
+    // activated/deactivated when you add/remove the algorithm from your
+    // job, which may or may not be of value to you.
+    EL::OutputStream output1("tree_output");
+    job.outputAdd (output1);
+    
+    EL::OutputStream output2("hist_output");
+    job.outputAdd (output2);
+    
+    EL::OutputStream output3("cutflow");
+    job.outputAdd (output3);
+    
+    
+    
+    
+    job.useXAOD ();
+    
+    // let's initialize the algorithm to use the xAODRootAccess package
+    xAOD::Init( "MyxAODAnalysis" ).ignore(); // call before opening first file
+    
+    return EL::StatusCode::SUCCESS;
 }
 
 
 
 EL::StatusCode MyxAODAnalysis :: histInitialize ()
 {
-  // Here you do everything that needs to be done at the very
-  // beginning on each worker node, e.g. create histograms and output
-  // trees.  This method gets called before any input files are
-  // connected.
-  return EL::StatusCode::SUCCESS;
+    // Here you do everything that needs to be done at the very
+    // beginning on each worker node, e.g. create histograms and output
+    // trees.  This method gets called before any input files are
+    // connected.
+    return EL::StatusCode::SUCCESS;
 }
 
 
 
 EL::StatusCode MyxAODAnalysis :: fileExecute ()
 {
-  // Here you do everything that needs to be done exactly once for every
-  // single file, e.g. collect a list of all lumi-blocks processed
-  return EL::StatusCode::SUCCESS;
+    // Here you do everything that needs to be done exactly once for every
+    // single file, e.g. collect a list of all lumi-blocks processed
+    return EL::StatusCode::SUCCESS;
 }
 
 
 
 EL::StatusCode MyxAODAnalysis :: changeInput (bool firstFile)
 {
-  // Here you do everything you need to do when we change input files,
-  // e.g. resetting branch addresses on trees.  If you are using
-  // D3PDReader or a similar service this method is not needed.
-  return EL::StatusCode::SUCCESS;
+    // Here you do everything you need to do when we change input files,
+    // e.g. resetting branch addresses on trees.  If you are using
+    // D3PDReader or a similar service this method is not needed.
+    return EL::StatusCode::SUCCESS;
 }
 
 // < move the "initialize ()" to a separate file "initialize.h"
 /*
-   EL::StatusCode MyxAODAnalysis :: initialize ()
-   {
-// Here you do everything that you need to do after the first input
-// file has been connected and before the first event is processed,
-// e.g. create additional histograms based on which variables are
-// available in the input files.  You can also create all of your
-// histograms and trees in here, but be aware that this method
-// doesn't get called if no events are processed.  So any objects
-// you create here won't be available in the output if you have no
-// input events.
-
-//  m_event = wk()->xaodEvent();
-
-// as a check, let's see the number of events in our xAOD
-//  Info("initialize()", "Number of events = %lli", m_event->getEntries() ); // print long long int
-
-Varinitialize();
-
-return EL::StatusCode::SUCCESS;
-}
-*/
+ EL::StatusCode MyxAODAnalysis :: initialize ()
+ {
+ // Here you do everything that you need to do after the first input
+ // file has been connected and before the first event is processed,
+ // e.g. create additional histograms based on which variables are
+ // available in the input files.  You can also create all of your
+ // histograms and trees in here, but be aware that this method
+ // doesn't get called if no events are processed.  So any objects
+ // you create here won't be available in the output if you have no
+ // input events.
+ 
+ //  m_event = wk()->xaodEvent();
+ 
+ // as a check, let's see the number of events in our xAOD
+ //  Info("initialize()", "Number of events = %lli", m_event->getEntries() ); // print long long int
+ 
+ Varinitialize();
+ 
+ return EL::StatusCode::SUCCESS;
+ }
+ */
 
 EL::StatusCode MyxAODAnalysis :: execute ()
 {
@@ -165,9 +184,6 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   vector<float> mcEvtWts;
   double pileWeight=1.0, gen_weight = 1.0;
   double weight=1.0;
-  bool passJetCleaning = true;
-
-  //cout << "ave_mu = " << ave_mu << endl;
 
   if(isMC) {
     run = eventInfo->mcChannelNumber();
@@ -190,11 +206,9 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
   /// Change JetCleaning (a event-level cut) to the flag of eventClean in DAOD
   /// Use working point of "LooseBad"
-  //passJetCleaning = eventInfo->DFCommonJets_eventClean_LooseBad();
-  bool isEventCleanAvailable = eventInfo->isAvailable<char>("DFCommonJets_eventClean_LooseBad");
-  passJetCleaning = eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad");
-  std::cout << "isEventCleanAvailable = " << isEventCleanAvailable << std::endl;
-  std::cout << "passJetCleaning = " << passJetCleaning << std::endl;
+  bool passJetCleaning = eventInfo->auxdataConst<char>("DFCommonJets_eventClean_LooseBad");
+  //std::cout << "isEventCleanAvailable = " << isEventCleanAvailable << std::endl;
+  //std::cout << "passJetCleaning = " << passJetCleaning << std::endl;
 
   VOmuon goodm,goodmiso;
   VOelectron goode,goodeiso;
@@ -220,6 +234,11 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   bool isRunTruth = false;
   vector<TLorentzVector> Truth_l, Truth_Z;
   vector<int> Truth_pid;
+  int triggertype[5];
+  for(int i=0;i<5;i++){
+      triggertype[i]=0;
+  }
+
 
   //  if(m_eventCounter!=45) return EL::StatusCode::SUCCESS;
   //  cout << endl;
@@ -392,7 +411,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
   vector<TLorentzVector> Truth_j;
   const xAOD::JetContainer* TruthJets = 0;
   if(isMC && isRunTruth) {
-    if( !m_event->retrieve( TruthJets, "AntiKt4TruthJets").isSuccess() ){
+    if( !m_event->retrieve( TruthJets, "AntiKt4TruthWZJets").isSuccess() ){
       Error("excute()", "Failed to retrieve Truth Jets info. Exiting." );
       return EL::StatusCode::FAILURE;
     }
@@ -474,6 +493,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
       goodm.clear(); goodmiso.clear();
       goode.clear(); goodeiso.clear();
+      goodj.clear();
 
       quickAna->process(*m_event).ignore();
 
@@ -483,62 +503,217 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       auto evtInfo = quickAna->eventinfo();
       int RadNum = -1;
       if(SETTING[SETNAME[0]]["doweight"]==1 && isMC) {
-        //pileWeight = evtInfo->auxdata<float>("PileupWeight");
-        //RadNum = evtInfo->auxdata<unsigned int>("RandomRunNumber");
+        pileWeight = evtInfo->auxdata<float>("PileupWeight");
+        RadNum = evtInfo->auxdata<unsigned int>("RandomRunNumber");
       }
       weight = pileWeight*gen_weight;
-
       SetFlag(FLAG_cut_temp,"xAOD","All", 1);
       SetWeight(Evt_Weight,"xAOD", "All", weight);
 
+      bool Badbat=true;
+      if(evtInfo->auxdata<char>("DFCommonJets_isBadBatman")) Badbat=false;
+      SetFlag(FLAG_cut_temp,"BadBatMan","All", Badbat);
+      SetWeight(Evt_Weight,"BadBatMan", "All", weight);
+
       bool passTrig = false;
+      bool passTrig1 = false;
       MapType_String::iterator it;
+      int ttype;
+ 
+      string nm1;
+      nm1="_passTrig";
+ 
       for(it=TRIG_vec.begin(); it!=TRIG_vec.end(); it++) {
-        string hltname = (*it).first;
-        string status = (*it).second;
-
-        if(isMC) {
-          if(RadNum<290000) {
-            if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
-          }else if(RadNum>290000 && RadNum<302919) {
-            if(RadNum==298687 && status.find("2016_298687")!=string::npos)
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-
-            if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
-          }else if(RadNum>=302919) {
-            if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
+          string hltname = (*it).first;
+          string status = (*it).second;
+          passTrig=false;
+          if(status.find("sEle")!=string::npos){
+              ttype=0;
+ 
           }
-        }else {
-          if(run<290000) {
-            if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
-          }else if(run>290000 && run<302919) {
-            if(run==298687 && status.find("2016_298687")!=string::npos)
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-
-            if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
-          }else if(run>=302919) {
-            if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-              passTrig = passTrig || evtInfo->auxdata<bool>(hltname+"_passTrig");
-            }
+          else if(status.find("mEle")!=string::npos){
+              ttype=1;
+ 
           }
-        }
+          else if(status.find("sMuon")!=string::npos){
+              ttype=2;
+          }
+          else if(status.find("mMuon")!=string::npos){
+              ttype=3;
+ 
+          }
+          else if((status.find("Ele")!=string::npos)&&(status.find("Muon")!=string::npos)){
+              ttype=4;
+          }
+
+          if(isMC) {
+              if(RadNum<290000) {
+                  if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }else if(RadNum>290000 && RadNum<=300287) {
+                  if(RadNum==298687 && status.find("2016_298687")!=string::npos)
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+ 
+                  if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }else if(RadNum>=300345&&RadNum<=302393) {
+                  if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }
+              else if(RadNum>=302737&&RadNum<=303560){
+                  if(RadNum<=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+                  if(RadNum>=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if(RadNum>=303638&&RadNum<=304494){
+                  if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+
+              }
+              else if(RadNum>=305291&&RadNum<=306714){
+                  if(RadNum<305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+                  if(RadNum>=305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if(RadNum==305359||RadNum==309314||RadNum==309346||RadNum==310216){
+                  if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if(RadNum>=307124&&RadNum<=308084){
+                  if(RadNum<=307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+                  if(RadNum>307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if((RadNum>=308979&&RadNum<=309166)||(RadNum>=309311&&RadNum<=309759)||(RadNum>=310015&&RadNum<=311481)){
+                  if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if(RadNum>=324320&&RadNum<=341649){
+                  if(status.find("2017")!=string::npos && status.find("MC")!=string::npos &&
+                     (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+          }else {
+              if(run<290000) {
+                  if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }else if(run>290000 && run<=300287) {
+                  if(run==298687 && status.find("2016_298687")!=string::npos)
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+ 
+                  if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }else if(run>=300345&&run<=302393) {
+                  if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+              }
+              else if(run>=302737&&run<=303560){
+                  if(run<=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+                  if(run>=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+
+              }
+              else if(run>=303638&&run<=304494){
+                  if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+              }
+              else if(run>=305291&&run<=306714){
+                  if(run<305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                     (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                      passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                  }
+ 
+                      if(run>=305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+ 
+                  }
+                  else if(run==305359||run==309314||run==309346||run==310216){
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+ 
+                  }
+                  else if(run>=307124&&run<=308084){
+                      if(run<=307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+                      if(run>307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+ 
+                  }
+                  else if((run>=308979&&run<=309166)||(run>=309311&&run<=309759)||(run>=310015&&run<=311481)){
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+ 
+                  }
+                  else if(run>=324320&&run<=341649){
+                      if(status.find("2017")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                          passTrig = passTrig || evtInfo->auxdata<bool>(hltname+nm1);
+                      }
+
+                  }
+              }
+              passTrig1=passTrig1||passTrig;
+          if(passTrig){
+              triggertype[ttype]=1;
+          }
       }
-
-      SetFlag(FLAG_cut_temp,"Trigger","All", passTrig);
+      SetFlag(FLAG_cut_temp,"Trigger","All", passTrig1);
       SetWeight(Evt_Weight, "Trigger", "All", weight);
 
 
@@ -588,54 +763,179 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
         bool passMuon=true;
         CountMuObj(muon, STEP_obj, CNT_obj, sysname, passMuon);
+        nm1="_trigMatch";
         if(passMuon) {
           muonInfo.trigM=false;
 
           MapType_String::iterator it;
           for(it=TRIG_vec.begin(); it!=TRIG_vec.end(); it++) {
-            string hltname = (*it).first;
-            string status = (*it).second;
-
-            if(status.find("Muon")==string::npos) continue;
-
-            if(isMC) {
-              if(RadNum<290000) {
-                if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(RadNum>290000 && RadNum<302919) {
-                if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(RadNum>=302919) {
-                if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }
-            }else {
-              if(run<290000) {
-                if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(run>290000 && run<302919) {
-                if(run==298687 && status.find("2016_298687")!=string::npos)
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-
-                if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(run>=302919) {
-                if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-                  muonInfo.trigM = (muonInfo.trigM || muon->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }
-            }
+              string hltname = (*it).first;
+              string status = (*it).second;
+              if(status.find("Muon")==string::npos) continue;
+              
+              if(isMC) {
+                  if(RadNum<290000) {
+                      if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(RadNum>290000 && RadNum<=300287) {
+                      if(RadNum==298687 && status.find("2016_298687")!=string::npos)
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(RadNum>=300345&&RadNum<=302393) {
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }
+                  else if(RadNum>=302737&&RadNum<=303560){
+                      if(RadNum<=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=303638&&RadNum<=304494){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=305291&&RadNum<=306714){
+                      if(RadNum<305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>=305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum==305359||RadNum==309314||RadNum==309346||RadNum==310216){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=307124&&RadNum<=308084){
+                      if(RadNum<=307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if((RadNum>=308979&&RadNum<=309166)||(RadNum>=309311&&RadNum<=309759)||(RadNum>=310015&&RadNum<=311481)){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=324320&&RadNum<=341649){
+                      if(status.find("2017")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+              }else {
+                  if(run<290000) {
+                      if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(run>290000 && run<=300287) {
+                      if(run==298687 && status.find("2016_298687")!=string::npos)
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(run>=300345&&run<=302393) {
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                  }
+                  else if(run>=302737&&run<=303560){
+                      if(run<=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      if(run>=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(run>=303638&&run<=304494){
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(run>=305291&&run<=306714){
+                      if(run<305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                          muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                          if(run>=305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run==305359||run==309314||run==309346||run==310216){
+                          if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run>=307124&&run<=308084){
+                          if(run<=307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          if(run>307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if((run>=308979&&run<=309166)||(run>=309311&&run<=309759)||(run>=310015&&run<=311481)){
+                          if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run>=324320&&run<=341649){
+                          if(status.find("2017")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                              muonInfo.trigM = muonInfo.trigM || muon->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                  }
           }
-
           muonInfo.sf=muon->auxdata<float>("ana_weight");
           muonInfo.index = index_muon;
           muonInfo.ptrMuon = muon;
@@ -690,74 +990,189 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
         bool passEle=true;
         CountEleObj(electron, STEP_obj, CNT_obj, sysname, passEle);
+        nm1="_trigMatch";
         if(passEle) {
 
           eleInfo.ismedium = electron->auxdata<char> ("ana_select_hzhinv_medium_selectionTool");
           eleInfo.d0sig = electron->auxdata<double> ("d0Sig");
           eleInfo.d0 = electron->auxdata<double> ("d0value");
           eleInfo.z0 = electron->auxdata<double> ("z0value");
-          //const xAOD::TrackParticle * IDtrkPart = electron->trackParticle();
-          //eleInfo.vtxtype = -1;
-          //if(IDtrkPart) {
-          //  if(IDtrkPart->vertex()) {
-          //    eleInfo.vtxtype = IDtrkPart->vertex()->vertexType();
-          //    //cout << IDtrkPart->vertex()->chiSquared() << " " << IDtrkPart->vertex()->numberDoF() << endl;
-          //  }                        
-          //}
-
 
           eleInfo.trigM=false;
-
           MapType_String::iterator it;
           for(it=TRIG_vec.begin(); it!=TRIG_vec.end(); it++) {
-            string hltname = (*it).first;
-            string status = (*it).second;
-
-            if(status.find("Electron")==string::npos) continue;
-
-            if(isMC) {
-              if(RadNum<290000) {
-                if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(RadNum>290000 && RadNum<302919) {
-                if(RadNum==298687 && status.find("2016_298687")!=string::npos)
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-
-                if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(RadNum>=302919) {
-                if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
+              string hltname = (*it).first;
+              string status = (*it).second;
+              if(status.find("Electron")==string::npos) continue;
+          
+              
+              if(isMC) {
+                  if(RadNum<290000) {
+                      if(status.find("2015")!=string::npos && status.find("MC")!=string::npos) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(RadNum>290000 && RadNum<=300287) {
+                      if(RadNum==298687 && status.find("2016_298687")!=string::npos)
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(RadNum>=300345&&RadNum<=302393) {
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }
+                  else if(RadNum>=302737&&RadNum<=303560){
+                      if(RadNum<=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>=302872&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=303638&&RadNum<=304494){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=305291&&RadNum<=306714){
+                      if(RadNum<305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>=305293&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum==305359||RadNum==309314||RadNum==309346||RadNum==310216){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=307124&&RadNum<=308084){
+                      if(RadNum<=307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      if(RadNum>307601&&status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if((RadNum>=308979&&RadNum<=309166)||(RadNum>=309311&&RadNum<=309759)||(RadNum>=310015&&RadNum<=311481)){
+                      if(status.find("2016")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(RadNum>=324320&&RadNum<=341649){
+                      if(status.find("2017")!=string::npos && status.find("MC")!=string::npos &&
+                         (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+              }else {
+                  if(run<290000) {
+                      if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(run>290000 && run<=300287) {
+                      if(run==298687 && status.find("2016_298687")!=string::npos)
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6A_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }else if(run>=300345&&run<=302393) {
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6B_6C_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                  }
+                  else if(run>=302737&&run<=303560){
+                      if(run<=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DESMALLER_302872")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      if(run>=302872&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6D_")!=string::npos||status.find("DBIGGER_302872")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(run>=303638&&run<=304494){
+                      if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6E_6F_")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                  }
+                  else if(run>=305291&&run<=306714){
+                      if(run<305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                         (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos||status.find("GESMALLER_305293")!=string::npos)) {
+                          eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                      }
+                      
+                          if(run>=305293&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6G_")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run==305359||run==309314||run==309346||run==310216){
+                          if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6H_")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run>=307124&&run<=308084){
+                          if(run<=307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          if(run>307601&&status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if((run>=308979&&run<=309166)||(run>=309311&&run<=309759)||(run>=310015&&run<=311481)){
+                          if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_ALL")!=string::npos || status.find("_6I_")!=string::npos||status.find("IBIGGER_307601")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                      else if(run>=324320&&run<=341649){
+                          if(status.find("2017")!=string::npos && status.find("Data")!=string::npos &&
+                             (status.find("_7ALL")!=string::npos || status.find("_7A")!=string::npos)) {
+                              eleInfo.trigM = eleInfo.trigM || electron->auxdata<bool>(hltname+nm1);
+                          }
+                          
+                      }
+                  }
               }
-            }else {
-              if(run<290000) {
-                if(status.find("2015")!=string::npos && status.find("Data")!=string::npos) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(run>290000 && run<302919) {
-                if(run==298687 && status.find("2016_298687")!=string::npos)
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-
-                if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("ABC")!=string::npos)) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }else if(run>=302919) {
-                if(status.find("2016")!=string::npos && status.find("Data")!=string::npos &&
-                    (status.find("ALL")!=string::npos || status.find("D_")!=string::npos)) {
-                  eleInfo.trigM = (eleInfo.trigM || electron->auxdata<bool>(hltname+"_trigMatch"));
-                }
-              }
-            }
-          }
+              
           eleInfo.trigM = eleInfo.trigM && eleInfo.L.Pt()>25.e3;
 
-          eleInfo.sf=electron->auxdata<float>("ana_weight_smzz4l");
+          eleInfo.sf=electron->auxdata<float>("ana_weight_darkph");
           eleInfo.index = index_ele;
           eleInfo.ptrElectron = electron;
           electron->auxdata<int>("index") = index_ele;
@@ -1049,7 +1464,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
           }
           if(fla==0) {
             xAOD::Electron* electron = goode[ind].ptrElectron;
-            if(!electron->auxdata<char>("ana_select_smzz4l_selectionTool")) pass_Loose=false;
+            if(!electron->auxdata<char>("ana_select_darkph_selectionTool")) pass_Loose=false;
             if(!electron->auxdata<char>("PassIso")) pass_Iso=false;
             auto const *Track = electron->trackParticle();
             double d0sig = xAOD::TrackingHelpers::d0significance(Track,eventInfo->beamPosSigmaX(), eventInfo->beamPosSigmaY(), eventInfo->beamPosSigmaXY());

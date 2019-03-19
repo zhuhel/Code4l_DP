@@ -1,6 +1,9 @@
 #ifndef MyAnalysis_OBJ_H
 #define MyAnalysis_OBJ_H
-
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <xAODMuon/Muon.h>
 #include <xAODEgamma/Electron.h>
 #include <xAODJet/Jet.h>
@@ -14,14 +17,15 @@ using namespace std;
 //<Predefined Constants>
 const double PI=3.1415926;
 const double ZMass=91.1876e3; //MeV
+const double DWMass=160.77e3; //MeV
 //const double m_mass=105.658367; //MeV
 //const double e_mass = 0.510998910; //MeV
 const double m_mass=105.658; //MeV
 const double e_mass = 0.511; //MeV
 const double Unit_GeV = 1000.; //MeV
-
-
-
+int countinggood=0;
+int countingbad=0;
+int goodeee=0;
 //<Object Class>
 //<General, Muon, Electron, Jet, MET>
 class OBJ{

@@ -1,15 +1,9 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2019 CERN for the benefit of the ATLAS collaboration
 */
 
-//        Copyright Iowa State University 2014.
-//                  Author: Nils Krumnack
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+/// @author Nils Krumnack
 
-// Please feel free to contact me (nils.erik.krumnack@cern.ch) for bug
-// reports, feature suggestions, praise and complaints.
 
 
 //
@@ -46,7 +40,8 @@ namespace ana
   MuonToolCorrect ::
   MuonToolCorrect (const std::string& name)
     : AsgTool (name), AnaToolCorrect<xAOD::MuonContainer> (name),
-      m_calib_smear ("MuonCalibrationAndSmearingTool", this)
+      m_calib_smear_16 ("MuonCalibrationAndSmearingTool_16", nullptr),
+      m_calib_smear_17 ("MuonCalibrationAndSmearingTool_17", nullptr)
   {
   }
 
@@ -56,10 +51,18 @@ namespace ana
   initialize()
   {
     ATH_MSG_DEBUG("initialize");
-    ATH_CHECK (ASG_MAKE_ANA_TOOL (m_calib_smear, CP::MuonCalibrationAndSmearingTool));
-    // Take the default properties
-    ATH_CHECK (m_calib_smear.initialize());
-    registerTool (&*m_calib_smear);
+
+    ATH_CHECK (ASG_MAKE_ANA_TOOL (m_calib_smear_16, CP::MuonCalibrationAndSmearingTool));
+    ATH_CHECK (m_calib_smear_16.setProperty ("SagittaCorr", true));
+    ATH_CHECK (m_calib_smear_16.initialize());
+    registerTool (&*m_calib_smear_16);
+
+    ATH_CHECK (ASG_MAKE_ANA_TOOL (m_calib_smear_17, CP::MuonCalibrationAndSmearingTool));
+    ATH_CHECK (m_calib_smear_17.setProperty ("Year", "Data17"));
+    ATH_CHECK (m_calib_smear_17.setProperty ("SagittaRelease", "sagittaBiasDataAll_30_07_18"));
+    ATH_CHECK (m_calib_smear_17.setProperty ("SagittaCorr", true));
+    ATH_CHECK (m_calib_smear_17.initialize());
+    registerTool (&*m_calib_smear_17);
 
     registerCut (SelectionStep::MET, "calib_tool", cut_calib_tool);
 
@@ -72,9 +75,30 @@ namespace ana
   correctObject (xAOD::Muon& muon)
   {
     ATH_MSG_DEBUG("correctObject");
-    // Apply the CP calibration
-    QA_CHECK_CUT (cut_calib_tool, m_calib_smear->applyCorrection (muon));
+    const xAOD::EventInfo* eventInfo = 0;
+    ATH_CHECK (evtStore()->retrieve( eventInfo, "EventInfo"));
 
+    unsigned int run = 0;
+    if ( eventInfo->eventType( xAOD::EventInfo::IS_SIMULATION ) ) 
+       run = eventInfo->auxdata<unsigned int>( "RandomRunNumber" );
+    else 
+       run = eventInfo->runNumber();
+
+    // Apply the CP calibration
+    double exp_smear = 0.;
+    double exp_nosmear = 0.;
+    if(run>320000){ 
+      QA_CHECK_CUT (cut_calib_tool, m_calib_smear_17->applyCorrection (muon));
+      exp_nosmear = m_calib_smear_17->expectedResolution("CB", muon, true);
+      exp_smear = m_calib_smear_17->expectedResolution("CB", muon, false);
+    }
+    if(run<320000){
+      QA_CHECK_CUT (cut_calib_tool, m_calib_smear_16->applyCorrection (muon));
+      exp_nosmear = m_calib_smear_16->expectedResolution("CB", muon, true);
+      exp_smear = m_calib_smear_16->expectedResolution("CB", muon, false);
+    }
+    muon.auxdata<float>("MCPExpReso_Smear") = exp_smear;
+    muon.auxdata<float>("MCPExpReso_NoSmear") = exp_nosmear; 
     return StatusCode::SUCCESS;
   }
 
@@ -85,6 +109,7 @@ namespace ana
     : AsgTool (name), AnaToolSelect<xAOD::MuonContainer> (name),
       m_quality (xAOD::Muon::Medium),
       m_selection ("MuonSelectionTool", this),
+      m_selectionHPT ("MuonSelectionToolHRT", this),
       m_isolationTool ("IsolationSelectionTool", this)
   {
     // declareProperty("Quality", m_quality);

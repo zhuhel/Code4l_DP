@@ -1,15 +1,9 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2019 CERN for the benefit of the ATLAS collaboration
 */
 
-//        Copyright Iowa State University 2014.
-//                  Author: Nils Krumnack
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+/// @author Nils Krumnack
 
-// Please feel free to contact me (nils.erik.krumnack@cern.ch) for bug
-// reports, feature suggestions, praise and complaints.
 
 
 //
@@ -121,8 +115,9 @@ int main (int argc, char **argv)
   conf.eventinfoDef = "default";
   // We just need some files for testing. Do not use these in your analysis
   conf.muMcFiles = {
-    "dev/PileupReweighting/mc15ab_defaults.NotRecommended.prw.root",
-    "dev/PileupReweighting/mc15c_v2_defaults.NotRecommended.prw.root",
+    //"dev/PileupReweighting/mc15ab_defaults.NotRecommended.prw.root",
+    //"dev/PileupReweighting/mc15c_v2_defaults.NotRecommended.prw.root",
+    "dev/SUSYTools/mc16a_defaults_buggy.NotRecommended.prw.root",
   };
   // Using test file from SUSYTools
   conf.muDataFiles = {"dev/SUSYTools/ilumicalc_histograms_None_276262-284154.root"};

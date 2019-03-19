@@ -131,6 +131,8 @@ class AnalysisVar {
     vector<string> CHN;       
 
     //<Define analysis steps / cut steps>
+    vector<string> Background;
+    vector<string> Ztype;
     vector<string> STEP_cut; // For event selection
     //MapType_VString STEP_cut; // For event selection
     MapType_VString STEP_obj; // For object selection

@@ -91,7 +91,41 @@ class MyxAODAnalysis : public EL::Algorithm, public AnalysisVar
 
     float sumOfWeights; //!
     float sumOfWeightsSquared; //!
-
+    float sumww;
+    float sumgevent;
+    float sumgl;
+    float sumbl;
+    float sumge;
+    float sumgm;
+    float sumbe;
+    float sumbm;
+    float basecute;
+    float wbasecute;
+    float loosee;
+    float wloosee;
+    float isoe;
+    float wisoe;
+    float d0sige;
+    float wd0sige;
+    float basecutm;
+    float wbasecutm;
+    float isom;
+    float wisom;
+    float d0sigm;
+    float wd0sigm;
+    int etae;
+    double FFE[5][4];
+    double FFM[5][4];
+    double FFE1[5][4];
+    double FFM1[5][4];
+    double FFM2[5][4];
+   double FFM3[5][4];
+   double FFEz[5][4];
+   double FFEz1[5][4];
+   double FFMz[5][4];
+   double FFMz1[5][4];
+   double FFMz2[5][4];
+   double FFMz3[5][4];
     //// tree varaibles
     TTree* tree; //!
 
@@ -167,12 +201,17 @@ class MyxAODAnalysis : public EL::Algorithm, public AnalysisVar
         int nybin, double ymin, double ymax, string cutstep=""); 
     void InitTreeVar(string varlist, string type);
     void InitVVar(string varlist, int nbin=0, double xmin=0, double xmax=0, string cutstep="xAOD");
-    void AddVarIntoTree(TTree *tree, string SYS="NOMINAL", bool isMC=true);
+    void AddVarIntoTree(TTree *tree, string SYS="VVLOOSE", bool isMC=true);
     void ReadTriggers(string& TRIG_list);
     void CreateTreeVarHistoMap(TFile *file);
     void FillHistograms(string sysname);
-
-
+    void MyInitTree(string varlist, TFile *file1, bool isMC);
+    void MyInitTree2(string CHN, string BR, TFile *file1);
+    double GetFF(double FFE[5][4], double FFM[5][4], double eta, double pt, int type);
+    bool Match(TLorentzVector p1, TLorentzVector p2);
+    void MyAddVarIntoTree(TTree *tree,string treename);
+    void MyInitTree2(string varlist, TFile *file1);
+   // bool myTrigger(xAOD::EventInfo *eventInfo, OBJ_ELECTRON eleInfo,OBJ_MUON muonInfo, bool isMC, int run, int RadNum, int type, int* Ttype);
 };
 
 #endif

@@ -69,6 +69,19 @@ namespace ana
   {
     return get<xAOD::JetContainer> (OBJECT_JET);
   }
+  inline xAOD::JetContainer *IEventObjects ::
+  truthjets () const
+  {
+    return get<xAOD::JetContainer> (OBJECT_TRUTHJET);// changed by shuzhou 17/09/2018
+  }
+
+
+  inline xAOD::JetContainer *IEventObjects ::
+  pflow_jets () const
+  {
+    return get<xAOD::JetContainer> (OBJECT_PFLOW_JET);
+  }
+
 
 
 
