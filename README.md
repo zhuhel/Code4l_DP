@@ -23,7 +23,7 @@ source setup.sh
 ### Compilation
 ```bash
 cd build
-make
+source setup_bld.sh
 # Sometimes the 'make' may be failed, just *repeat make* it again (a known issue for cmake packages?).
 ```
 
