@@ -1,0 +1,60 @@
+HLT_mu20_iloose_L1MU15                              2015_MC     2015_Data sMuon
+HLT_mu50                                            2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC      2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data     2015_MC     2015_Data 2017_7ALL_MC 2017_7ALL_Data  sMuon
+HLT_mu60_0eta105_msonly                             2015_MC     2015_Data 2017_7ALL_MC 2017_7ALL_Data   sMuon
+HLT_mu40                                            2016_6A_MC     2016_6A_Data     2015_MC   2015_Data    sMuon
+HLT_mu24_ivarloose_L1MU15                           2016_6A_MC     sMuon
+HLT_mu24_iloose_L1MU15                              2016_6A_MC    sMuon
+HLT_mu24_ivarloose                                  2016_6A_Data  sMuon
+HLT_mu24_iloose                                     2016_6A_Data     sMuon
+HLT_mu24_ivarmedium                                 2016_6B_6C_6D_6E_MC      2016_6B_6C_6D_6E_Data       sMuon
+HLT_mu24_imedium                                    2016_6B_6C_6D_6E_MC      2016_6B_6C_6D_6E_Data         sMuon
+HLT_mu26_ivarmedium                                 2016_6E_6F_6G_6H_6I_MC       2016_6E_6F_6G_6H_6I_Data      2016_DBIGGER_302872 2017_7ALL_MC 2017_7ALL_Data    sMuon
+HLT_mu26_imedium                                    2016_6E_6F_MC       2016_6E_6F_Data      2016_DBIGGER_302872       2016_GESMALLER_305293         sMuon
+HLT_2mu10                                           2015_MC     2015_Data     2016_6A_MC     2016_6A_Data     mMuon
+HLT_mu18_mu8noL1                                    2015_MC     2015_Data     mMuon
+HLT_2mu10_nomucomb                                  2016_6A_MC     2016_6A_Data      mMuon
+HLT_mu20_mu8noL1                                    2016_6A_6B_6C_6D_6E_MC     2016_6A_6B_6C_6D_6E_Data       mMuon
+HLT_mu20_nomucomb_mu6noL1_nscan03                   2016_6A_6B_6C_MC     2016_6A_6B_6C_Data     2016_DESMALLER_302872   mMuon
+HLT_2mu14                                           2016_6B_6C_6D_6E_6F_6G_6H_6I_MC      2016_6B_6C_6D_6E_6F_6G_6H_6I_Data 2017_7ALL_MC 2017_7ALL_Data     mMuon
+HLT_2mu14_nomucomb                                  2016_6B_6C_MC     2016_6B_6C_Data     2016_DESMALLER_302872         mMuon
+HLT_mu22_mu8noL1                                    2016_6E_6F_6G_6H_6I_MC       2016_6E_6F_6G_6H_6I_Data     2016_DBIGGER_302872 2017_7ALL_MC 2017_7ALL_Data      mMuon
+HLT_mu22_mu8noL1_calotag_0eta010                    2017_7ALL_MC     2017_7ALL_Data     mMuon
+HLT_3mu6                                            2015_MC     2015_Data      2016_6B_6C_MC       2016_6B_6C_Data   2016_DESMALLER_302872   2017_7ALL_MC   2017_7ALL_Data     mMuon
+HLT_mu18_2mu4noL1                                   2015_MC     2015_Data   mMuon   
+HLT_3mu6_msonly                                     2015_MC     2015_Data      2016_6E_6F_6G_6H_6I_MC       2016_6E_6F_6G_6H_6I_Data   2016_DBIGGER_302872 2017_7ALL_MC  2017_7ALL_Data  mMuon
+HLT_mu20_2mu4noL1                                   2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data   2017_7ALL_MC     2017_7ALL_Data      mMuon
+HLT_3mu4                                            2016_6A_MC       2016_6A_Data   2016_IBIGGER_307601    2017_7ALL_MC         2017_7ALL_Data   mMuon
+HLT_mu6_2mu4                                        2016_6A_6B_6C_MC     2016_6A_6B_6C_Data      2016_DESMALLER_302872        mMuon
+HLT_4mu4                                            2017_7ALL_MC           2017_7ALL_Data    mMuon
+HLT_mu11_nomucomb_2mu4noL1_nscan03_L1MU11_2MU6      2016_6A_6B_6C_MC     2016_6A_6B_6C_Data      2016_DESMALLER_302872     mMuon
+HLT_mu20_msonly_mu10noL1_msonly_nscan05_noComb      2016_6A_6B_6C_MC     2016_6A_6B_6C_Data      2016_DESMALLER_302872       mMuon
+HLT_e60_lhmedium                                    2015_MC     2015_Data       sElectron
+HLT_e60_lhmedium_nod0                               2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data     2017_7ALL_MC    2017_7ALL_Data   sElectron
+HLT_e60_medium                                      2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data     sElectron
+HLT_e140_lhloose_nod0                               2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data      2017_7ALL_MC        2017_7ALL_Data    sElectron
+HLT_e300_etcut                                      2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data      2017_7ALL_MC       2017_7ALL_Data   sElectron
+HLT_e24_lhmedium_nod0_L1EM20VH                      2016_298687     sElectron
+HLT_e120_lhloose                                    2015_MC     2015_Data      sElectron
+HLT_e24_lhmedium_L1EM20VH                           2015_EtoJ_MC     2015_EtoJ_Data     sElectron
+HLT_e24_lhtight_nod0_ivarloose                      2016_6A_6B_6C_MC       2016_6A_6B_6C_Data      2016_DESMALLER_302872     sElectron
+HLT_e26_lhtight_nod0_ivarloose                      2016_6E_6F_6G_6H_6I_MC       2016_6E_6F_6G_6H_6I_Data      2016_DBIGGER_302872    2017_7ALL_MC       2017_7ALL_Data  sElectron
+HLT_2e12_lhloose_L12EM10VH                          2015_MC     2015_Data       mElectron
+HLT_2e15_lhvloose_nod0_L12EM13VH                    2016_6A_6B_6C_MC     2016_6A_6B_6C_Data       2016_DESMALLER_302872       mElectron
+HLT_e24_lhvloose_nod0_2e12_lhvloose_nod0_L1EM20VH_3EM10VH     2017_7ALL_MC       2017_7ALL_Data     mElectron
+HLT_2e17_lhvloose_nod0_L12EM15VHI                   2017_7ALL_MC         2017_7ALL_Data     mElectron
+HLT_2e17_lhvloose_nod0                              2016_6E_6F_6G_6H_6I_MC       2016_6E_6F_6G_6H_6I_Data       2016_300540     2016_DBIGGER_302872     mElectron
+HLT_e17_lhloose_2e9_lhloose                         2015_MC     2015_Data         mElectron
+HLT_e17_lhloose_nod0_2e9_lhloose_nod0               2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC     2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data    2016_DESMALLER_302872 mElectron
+HLT_2e24_lhvloose_nod0                              2017_7ALL_MC            2017_7ALL_Data   mElectron
+HLT_e17_lhloose_mu14                                2015_MC     2015_Data     Electron  Muon
+HLT_2e12_lhloose_mu10                               2015_MC     2015_Data     2016_6E_6F_MC       2016_6E_6F_Data     2016_DBIGGER_302872    Electron  Muon
+HLT_e12_lhloose_2mu10                               2015_MC     2015_Data     2016_6E_6F_MC       2016_6E_6F_Data     2016_DBIGGER_302872     Electron  Muon
+HLT_e24_medium_L1EM20VHI_mu8noL1                    2015_MC     2015_Data    Electron  Muon
+HLT_e7_medium_mu24                                  2015_MC     2015_Data     Electron  Muon
+HLT_e17_lhloose_nod0_mu14                           2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC    2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data  2017_7ALL_MC 2017_7ALL_Data   Electron  Muon
+HLT_e24_lhmedium_nod0_L1EM20VHI_mu8noL1             2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC    2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data    Electron  Muon
+HLT_e7_lhmedium_nod0_mu24                           2016_6A_6B_6C_MC    2016_6A_6B_6C_Data    2016_DESMALLER_302872    2017_7ALL_MC    2017_7ALL_Data    Electron  Muon
+HLT_e12_lhloose_nod0_2mu10                          2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC    2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data      2017_7ALL_MC     2017_7ALL_Data   Electron  Muon
+HLT_2e12_lhloose_nod0_mu10                          2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_MC    2016_6A_6B_6C_6D_6E_6F_6G_6H_6I_Data       2017_7ALL_MC     2017_7ALL_Data    Electron  Muon
+HLT_e7_lhmedium_mu24                                2016_6E_6F_MC       2016_6E_6F_Data      2016_DBIGGER_302872    Electron  Muon
+HLT_e26_lhmedium_nod0_mu8noL1                       2017_7ALL_Data        2017_7ALL_MC   Electron    Muon
