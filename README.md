@@ -6,7 +6,7 @@ Original code from Bing Li (bing.li@cern.ch)
 NOTE: Code is under development. Do not change releaser, etc.
 Otherwise could have quite some technical WARNING/ERROR.
 
-Rel. 21.2.8, CMake based
+Rel. 21.2.64, CMake based
 General info, refer to
 https://twiki.cern.ch/twiki/bin/view/AtlasComputing/RootCoreToCMake
 
@@ -23,7 +23,7 @@ source setup.sh
 ### Compilation
 ```bash
 cd build
-make
+source setup_bld.sh
 # Sometimes the 'make' may be failed, just *repeat make* it again (a known issue for cmake packages?).
 ```
 
