@@ -194,6 +194,7 @@ class AnalysisVar {
     MapType2_Long  TreeLngVar;
     MapType2_Bool  TreeBoolVar;
     MapType2_VFloat TreeFltVVar;
+    MapType2_VDouble TreeDouVVar;
     MapType2_VInt TreeIntVVar;
     MapType2_TLorentzVector  TreeTLVVar;
     MapType2_VTLorentzVector  TreeTLVVVar;

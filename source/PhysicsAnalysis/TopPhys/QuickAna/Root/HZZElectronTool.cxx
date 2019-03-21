@@ -175,6 +175,7 @@ namespace ana
     electron.auxdata<double>("d0Sig") = d0sig;
     electron.auxdata<double>("d0value") = d0;
     electron.auxdata<double>("z0value") = z0;
+    electron.auxdata<double>("z0sintheta") = z0sin;
 
     if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l && m_wp != WPType::_DarkPh) {
       cut_D0.setPassedIf (fabs(d0sig)<5.);
@@ -251,5 +252,5 @@ namespace ana
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_loose", makeHZZElectronTool (args, "LooseLLH", WPType::_ZHinv, "Loose"))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_medium", makeHZZElectronTool (args, "MediumLLH", WPType::_ZHinv, "Loose")) 
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_tight", makeHZZElectronTool (args, "TightLLH", WPType::_ZHinv, "Loose"))
-  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("darkph", makeHZZElectronTool (args, "LooseLLH", WPType::_DarkPh))
+  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("darkph", makeHZZElectronTool (args, "VLooseLLH", WPType::_DarkPh))
 }

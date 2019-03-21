@@ -45,10 +45,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   
   
   // --> original simple step cut for obj mu
-  InitObjSTEP(STEP_obj,"mu","All,Pt,Eta,Tool,Z0,D0");
+  InitObjSTEP(STEP_obj,"mu","All,Pt,Eta,Tool,Z0,D0,OverLap");
   // --> original simple step cut for obj ele
-  InitObjSTEP(STEP_obj,"ele","All,Pt,Eta,ObjQ,Z0,ID");
-  InitObjSTEP(STEP_obj,"jet","All,Eta,PtEta,JVT");
+  InitObjSTEP(STEP_obj,"ele","All,Pt,Eta,ObjQ,Z0,ID,OverLap");
+  InitObjSTEP(STEP_obj,"jet","All,Eta,PtEta,JVT,OverLap");
   
   //InitHistVar("mu", 100, 0, 50, "xAOD,TwoJet");
   //InitHistVar("MZZ,PtZZ,MZ1,MZ2,PtZ1,PtZ2", 1000, 0, 1000, "Filter,TwoJet,TwoSigJet,dEtaJJ,MJJ");
@@ -75,9 +75,9 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
   Info("initialize()", "Number of events = %lli", m_event->getEntries() );
   
   
-  const xAOD::EventInfo* eventInfo = 0;
-  if( !m_event->retrieve( eventInfo, "EventInfo").isSuccess() )
-  {
+    const xAOD::EventInfo* eventInfo = 0;
+    if( !m_event->retrieve( eventInfo, "EventInfo").isSuccess() )
+    {
       Error("execute ()", "Failed to retrieve EventInfo. Exiting." );
         return EL::StatusCode::FAILURE;
     }
@@ -159,10 +159,10 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     string LumiCalcFile2 = "GoodRunsLists/data16_13TeV/20170720/physics_25ns_20.7.lumicalc.OflLumi-13TeV-009.root";
     string LumiCalcFile3 = "GoodRunsLists/data17_13TeV/20171130/physics_25ns_Triggerno17e33prim.lumicalc.OflLumi-13TeV-001.root";
     string LumiCalcFile4 = "GoodRunsLists/data18_13TeV/20181111/ilumicalc_histograms_None_348885-364292_OflLumi-13TeV-001.root";
-    //lumicalcFiles.push_back(LumiCalcFile1);
-    //lumicalcFiles.push_back(LumiCalcFile2);
-    //lumicalcFiles.push_back(LumiCalcFile3);
-   lumicalcFiles.push_back(LumiCalcFile4);
+    lumicalcFiles.push_back(LumiCalcFile1);
+    lumicalcFiles.push_back(LumiCalcFile2);
+    lumicalcFiles.push_back(LumiCalcFile3);
+    lumicalcFiles.push_back(LumiCalcFile4);
     
     string TRIG_list = "";
     ReadTriggers( TRIG_list );
@@ -171,10 +171,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     if(!isMC) quickAna->isDataFlag="true";
     quickAna->eventinfoDef = "default";
     quickAna->triggerDef = TRIG_list;
-    //quickAna->muonDef="smzz4l";
-    //quickAna->electronDef="smzz4l_veryloose smzz4l";
-    quickAna->muonDef="darkph";
-    quickAna->electronDef="darkph hzhinv_medium";
+    quickAna->muonDef="darkph hzhinv_loose hzhinv_medium darkph_tight";
+    quickAna->electronDef="darkph hzhinv_loose hzhinv_medium hzhinv_tight";
     quickAna->jetKine = "pt > 30e3 && eta < 4.5 && eta >-4.5";
     quickAna->jetDef="antikt04_noBtag"; // no btag
    // quickAna->jetDef="antikt04_HZZ"; // btag setup in HZZ analysis
@@ -182,8 +180,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     quickAna->photonDef="none";
     quickAna->tauDef="none";
     quickAna->metDef="none";
-    //quickAna->orDef="default";
-    quickAna->orDef="vbs_4l";
+    quickAna->orDef="default";
+    //quickAna->orDef="vbs_4l";
     // disable Pileup reweighting, no prw files yet
     quickAna->muDataFiles=lumicalcFiles;
     quickAna->muMcFiles=prwFiles;
@@ -242,31 +240,6 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     m_eventCounter = 0;
     m_filter = 0;
     m_nlep = 0;
-    m_4mfilter = 0;
-    m_4efilter = 0;
-    m_2e2mfilter = 0;
-    
-    m_2e2mfidu0 = 0;
-    m_2e2mfidu1 = 0;
-    m_2e2mfidu2 = 0;
-    m_2e2mfidu3 = 0;
-    m_2e2mfidu4 = 0;
-    
-    m_4mfidu0 = 0;
-    m_4mfidu1 = 0;
-    m_4mfidu2 = 0;
-    m_4mfidu3 = 0;
-    m_4mfidu4 = 0;
-    
-    m_4efidu0 = 0;
-    m_4efidu1 = 0;
-    m_4efidu2 = 0;
-    m_4efidu3 = 0;
-    m_4efidu4 = 0;
-    
-    m_tag1 = 0;
-    m_tag2 = 0;
-    m_tag3 = 0;
     
     return EL::StatusCode::SUCCESS;
     
@@ -503,6 +476,12 @@ void MyxAODAnalysis :: InitTreeVar(string varlist, string type) {
     if(type=="vector<F>") {
         for(int i=0; i<(int)variables.size(); i++) {
             TreeFltVVar[variables[i]]["Value"].clear();
+        }
+    }
+    
+    if(type=="vector<D>") {
+        for(int i=0; i<(int)variables.size(); i++) {
+            TreeDouVVar[variables[i]]["Value"].clear();
         }
     }
     
@@ -763,6 +742,11 @@ void MyxAODAnalysis :: AddVarIntoTree(TTree *tree, string SYS, bool isMC) {
                 //varname = sline.substr(11);
                 InitTreeVar(varname, "vector<F>");
                 tree->Branch(varname.c_str(), &TreeFltVVar[varname]["Value"]);
+            }
+            else if(sline.find("vector<D>")!=string::npos) {
+                //varname = sline.substr(11);
+                InitTreeVar(varname, "vector<D>");
+                tree->Branch(varname.c_str(), &TreeDouVVar[varname]["Value"]);
             }
             else if(sline.find("vector<I>")!=string::npos) {
                 //varname = sline.substr(11);

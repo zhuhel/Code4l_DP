@@ -116,6 +116,9 @@ namespace ana
      d0sig=0;
     }
     muon.auxdata<double>("d0Sig") = d0sig;
+    muon.auxdata<double>("d0value") = d0;
+    muon.auxdata<double>("z0value") = z0;
+    muon.auxdata<double>("z0sintheta") = z0sin;
 
     if(m_wp != WPType::_HZZ4l) {
 
@@ -261,7 +264,8 @@ namespace ana
   QUICK_ANA_MUON_DEFINITION_MAKER ("smzz4l", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_SMZZ4l))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_loose", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_ZHinv, "Loose"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hzhinv_medium", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_ZHinv, "Loose"))
- //QUICK_ANA_MUON_DEFINITION_MAKER ("smzz4l_LowPt", makeHZZMuonTool (args, xAOD::Muon::VeryLoose, WPType::_SMZZ4l))
+  //QUICK_ANA_MUON_DEFINITION_MAKER ("smzz4l_LowPt", makeHZZMuonTool (args, xAOD::Muon::VeryLoose, WPType::_SMZZ4l))
   QUICK_ANA_MUON_DEFINITION_MAKER ("hmumu", makeHZZMuonTool (args, xAOD::Muon::Medium, WPType::_Hmumu, "LooseTrackOnly"))
   QUICK_ANA_MUON_DEFINITION_MAKER ("darkph", makeHZZMuonTool (args, xAOD::Muon::Loose, WPType::_DarkPh))
+  QUICK_ANA_MUON_DEFINITION_MAKER ("darkph_tight", makeHZZMuonTool (args, xAOD::Muon::Tight, WPType::_DarkPh))
 }

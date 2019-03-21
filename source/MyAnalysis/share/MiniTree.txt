@@ -1,13 +1,25 @@
 Int_t    run
 ULong    event
 Double_t weight
+Float_t  mu
 
-#Leptons and jets
+#Jets
 Int_t    nJet
-Int_t    nLep
 vector<TLV> v_tlv_J
+
+#Leptons
+Int_t    nLep
 vector<TLV> v_tlv_L
 vector<I> v_PID
+vector<I> v_isLoose
+vector<I> v_isMedium
+vector<I> v_isTight
+#vector<I> v_isLowPt
+vector<I> v_isFixCutLoose
+vector<D> v_d0Sig
+vector<D> v_d0
+vector<D> v_z0
+vector<D> v_z0sintheta
 
 #Triggers
 Int_t HLT_e26_lhtight_nod0_ivarloose

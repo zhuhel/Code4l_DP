@@ -33,11 +33,10 @@ class OBJ{
     double E,Et;
     double p,pt,px,py,pz;
     double eta,phi,m;
-    double d0,z0,d0err,z0err,d0sig,z0sig;
-    double d0_old,z0_old,d0err_old,z0err_old,d0sig_old,z0sig_old;
+    double d0,z0,d0err,z0err,d0sig,z0sintheta;
     double sf;
     int index, vtxtype;
-    bool passIso;
+    int passIso;
     bool trigM; 
     TLorentzVector L,Lori,Lcorr,LF;       
 };    
@@ -45,7 +44,7 @@ class OBJ{
 class OBJ_MUON : public OBJ{
   public:
     int author, charge, type, quality; // type is added by Cong
-    double iscombined, isloose, ismedium, istight, istag, issa; // classified into type and quality
+    int iscombined, isloose, ismedium, istight, islowpt, istag, issa; // classified into type and quality
     double id; /* 1: staco, 2: ST, 3: SA, 4: calo */
     double caloId, caloLikelihood;
     int passhits_staco, passhits_calo, passhits_sa, passhits_3rdChain;
@@ -71,7 +70,7 @@ class OBJ_ELECTRON: public OBJ{
     int iscr, isgood; //too define control region. isgood==1 for std good electron, iscr==1 for cr
     double charge;
     uint16_t author;
-    double isloose, ismedium, istight, isloosepp, ismediumpp, istightpp, islooseppzz, ismultilep, islikelihood;
+    int isloose, ismedium, istight, isloosepp, ismediumpp, istightpp, islooseppzz, ismultilep, islikelihood;
     bool passOQ;
     double clE, clpt, cleta, clphi, trkpt, trketa, trktheta, trkphi, qoverp;
     double trkpt2, trketa2, trkphi2;
@@ -115,7 +114,7 @@ class Pair {
     double mass;
     vector<xAOD::Muon*> ptrVMuon;
     vector<xAOD::Electron*> ptrVElectron;
-    vector<bool> passIso;
+    vector<int> passIso;
 };
 
 //class for quads, i.e. Z pairs
@@ -129,7 +128,7 @@ class Quad {
     vector<int> index_lep;
     vector<int> flavor_lep;
     vector<int> charge_lep;
-    vector<float> ptcone20, etcone20, ptcone20_corr, etcone20_corr, d0sig, z0sig, d0, z0;
+    vector<float> ptcone20, etcone20, ptcone20_corr, etcone20_corr, d0sig, z0sintheta, d0, z0;
     vector<double> topoetcone20;
     TLorentzVector ZZ;
     double weight, trigSF;

@@ -485,6 +485,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
       ClearVariables(TreeIntVar);
       ClearVariables(TreeIntVVar);
       ClearVariables(TreeDouVar);
+      ClearVariables(TreeDouVVar);
       ClearVariables(TreeLngVar);
       ClearVariables(TreeFltVar);
       ClearVariables(TreeFltVVar);
@@ -753,18 +754,29 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
         muon->auxdata< char >( "All" ) = true;
 
-        if(muon->auxdata<char> ("ana_select_ID")) muon->auxdata< char >( "Tool" ) = true;
-        if(muon->auxdata<char> ("ana_select_Pt")) muon->auxdata< char >( "Pt" ) = true;
-        if(muon->auxdata<char> ("ana_select_Eta")) muon->auxdata< char >( "Eta" ) = true;
-        if(muon->auxdata<char> ("ana_select_Pt_Calo")) muon->auxdata< char >( "Pt_Calo" ) = true;
-        if(muon->auxdata<char>("ana_select_D0")) muon->auxdata< char >( "D0" ) = true;
-        if(muon->auxdata<char>("ana_select_Z0")) muon->auxdata< char >( "Z0" ) = true;
-        if(muon->auxdata<char> ("ana_select")) muon->auxdata< char >( "OverLap" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_ID")) muon->auxdata< char >( "Tool" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_Pt")) muon->auxdata< char >( "Pt" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_Eta")) muon->auxdata< char >( "Eta" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_Pt_Calo")) muon->auxdata< char >( "Pt_Calo" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_D0")) muon->auxdata< char >( "D0" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph_Z0")) muon->auxdata< char >( "Z0" ) = true;
+        if(muon->auxdata<char> ("ana_select_darkph")) muon->auxdata< char >( "OverLap" ) = true;
 
         bool passMuon=true;
         CountMuObj(muon, STEP_obj, CNT_obj, sysname, passMuon);
         nm1="_trigMatch";
         if(passMuon) {
+
+          muonInfo.isloose = muon->auxdata<char> ("ana_select_hzhinv_loose_selectionTool");
+          muonInfo.ismedium = muon->auxdata<char> ("ana_select_hzhinv_medium_selectionTool");
+          muonInfo.istight = muon->auxdata<char> ("ana_select_darkph_tight_selectionTool");
+          muonInfo.islowpt = muon->auxdata<char> ("ana_select_smzz4l_LowPt_selectionTool");
+          muonInfo.d0sig = muon->auxdata<double> ("d0Sig");
+          muonInfo.d0 = muon->auxdata<double> ("d0value");
+          muonInfo.z0 = muon->auxdata<double> ("z0value");
+          muonInfo.z0sintheta = muon->auxdata<double> ("z0sintheta");
+          muonInfo.passIso = muon->auxdata<char>("PassIso");
+
           muonInfo.trigM=false;
 
           MapType_String::iterator it;
@@ -936,7 +948,7 @@ EL::StatusCode MyxAODAnalysis :: execute ()
                       }
                   }
           }
-          muonInfo.sf=muon->auxdata<float>("ana_weight");
+          muonInfo.sf=muon->auxdata<float>("ana_weight_darkph");
           muonInfo.index = index_muon;
           muonInfo.ptrMuon = muon;
           muon->auxdata<int>("index") = index_muon;
@@ -993,10 +1005,14 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         nm1="_trigMatch";
         if(passEle) {
 
+          eleInfo.isloose = electron->auxdata<char> ("ana_select_hzhinv_loose_selectionTool");
           eleInfo.ismedium = electron->auxdata<char> ("ana_select_hzhinv_medium_selectionTool");
+          eleInfo.istight = electron->auxdata<char> ("ana_select_hzhinv_tight_selectionTool");
           eleInfo.d0sig = electron->auxdata<double> ("d0Sig");
           eleInfo.d0 = electron->auxdata<double> ("d0value");
           eleInfo.z0 = electron->auxdata<double> ("z0value");
+          eleInfo.z0sintheta = electron->auxdata<double> ("z0sintheta");
+          eleInfo.passIso = electron->auxdata<char>("PassIso");
 
           eleInfo.trigM=false;
           MapType_String::iterator it;
@@ -1498,38 +1514,11 @@ EL::StatusCode MyxAODAnalysis :: execute ()
 
       CountEvt(sysname, CHN, STEP_cut, FLAG_cut_temp, FLAG_cut, CNT_cut, Evt_Weight);
       
-      // Histograms
-      // Event level
-      HistVar["mu"]["Value"] = ave_mu;
+      // // Histograms: total sum of weights
+      // HistVar["Weight"]["Value"] = weight;
 
-      if(FLAG_cut["eeee"]["JPsiVeto"] || FLAG_cut["eemm"]["JPsiVeto"] || FLAG_cut["mmmm"]["JPsiVeto"]) {
-        // Lepton
-        HistVar["PtL1"]["Value"] = best_Quad.pair[0].lepton[0].Pt()/1000.;
-        HistVar["PtL2"]["Value"] = best_Quad.pair[0].lepton[1].Pt()/1000.;
-        HistVar["PtL3"]["Value"] = best_Quad.pair[1].lepton[0].Pt()/1000.;
-        HistVar["PtL4"]["Value"] = best_Quad.pair[1].lepton[1].Pt()/1000.;
-        HistVar["EtaL1"]["Value"] = best_Quad.pair[0].lepton[0].Eta();
-        HistVar["EtaL2"]["Value"] = best_Quad.pair[0].lepton[1].Eta();
-        HistVar["EtaL3"]["Value"] = best_Quad.pair[1].lepton[0].Eta();
-        HistVar["EtaL4"]["Value"] = best_Quad.pair[1].lepton[1].Eta();
-        HistVar["PhiL1"]["Value"] = best_Quad.pair[0].lepton[0].Phi();
-        HistVar["PhiL2"]["Value"] = best_Quad.pair[0].lepton[1].Phi();
-        HistVar["PhiL3"]["Value"] = best_Quad.pair[1].lepton[0].Phi();
-        HistVar["PhiL4"]["Value"] = best_Quad.pair[1].lepton[1].Phi();
-
-        // Di-lepton
-        HistVar["MZ1"]["Value"] = best_Quad.pair[0].Z.M()/1000.;
-        HistVar["PtZ1"]["Value"] = best_Quad.pair[0].Z.Pt()/1000.;
-        HistVar["MZ2"]["Value"] = best_Quad.pair[1].Z.M()/1000.;
-        HistVar["PtZ2"]["Value"] = best_Quad.pair[1].Z.Pt()/1000.;
-
-        // 4lepton
-        HistVar["MZZ"]["Value"] = best_Quad.ZZ.M()/1000.;
-        HistVar["PtZZ"]["Value"] = best_Quad.ZZ.Pt()/1000.;
-      }
-
-      // Fill hist
-      FillHistograms(sysname);
+      // // Fill hist
+      // FillHistograms(sysname);
 
       // Fill tree
       bool fillReco = FLAG_cut["eeee"]["FourMore"] || FLAG_cut["eemm"]["FourMore"] || FLAG_cut["mmmm"]["FourMore"];
@@ -1545,18 +1534,37 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         TreeIntVar["run"]["Value"] = run;
         TreeLngVar["event"]["Value"] = event;
         TreeDouVar["weight"]["Value"] = weight;
+        TreeFltVar["mu"]["Value"] = ave_mu;
 
         TreeIntVar["nLep"]["Value"] = nMuons + nElectrons;
         TreeIntVar["nJet"]["Value"] = nJets;
         // All good leptons
         for(int i=0; i<goode.size(); i++) {
           TreeTLVVVar["v_tlv_L"]["Value"].push_back((goode[i].L));
-          if(goode[i].charge < 0) TreeIntVVar["v_PID"]["Value"].push_back(11);
+          TreeIntVVar["v_isLoose"]["Value"].push_back((goode[i].isloose));
+          TreeIntVVar["v_isMedium"]["Value"].push_back((goode[i].ismedium));
+          TreeIntVVar["v_isTight"]["Value"].push_back((goode[i].istight));
+          TreeIntVVar["v_isLowPt"]["Value"].push_back((0));
+          TreeIntVVar["v_isFixCutLoose"]["Value"].push_back((goode[i].passIso));
+          TreeDouVVar["v_d0Sig"]["Value"].push_back((goode[i].d0sig));
+          TreeDouVVar["v_d0"]["Value"].push_back((goode[i].d0));
+          TreeDouVVar["v_z0"]["Value"].push_back((goode[i].z0));
+          TreeDouVVar["v_z0sintheta"]["Value"].push_back((goode[i].z0sintheta));
+          if(goode[i].charge > 0) TreeIntVVar["v_PID"]["Value"].push_back(11);
           else TreeIntVVar["v_PID"]["Value"].push_back(-11);
         }
         for(int i=0; i<goodm.size(); i++) {
           TreeTLVVVar["v_tlv_L"]["Value"].push_back((goodm[i].L));
-          if(goodm[i].charge < 0) TreeIntVVar["v_PID"]["Value"].push_back(13);
+          TreeIntVVar["v_isLoose"]["Value"].push_back((goodm[i].isloose));
+          TreeIntVVar["v_isMedium"]["Value"].push_back((goodm[i].ismedium));
+          TreeIntVVar["v_isTight"]["Value"].push_back((goodm[i].istight));
+          TreeIntVVar["v_isLowPt"]["Value"].push_back((goodm[i].islowpt));
+          TreeIntVVar["v_isFixCutLoose"]["Value"].push_back((goodm[i].passIso));
+          TreeDouVVar["v_d0Sig"]["Value"].push_back((goodm[i].d0sig));
+          TreeDouVVar["v_d0"]["Value"].push_back((goodm[i].d0));
+          TreeDouVVar["v_z0"]["Value"].push_back((goodm[i].z0));
+          TreeDouVVar["v_z0sintheta"]["Value"].push_back((goodm[i].z0sintheta));
+          if(goodm[i].charge > 0) TreeIntVVar["v_PID"]["Value"].push_back(13);
           else TreeIntVVar["v_PID"]["Value"].push_back(-13);
         }
         for(int i=0; i<goodj.size(); i++) {
@@ -1711,34 +1719,10 @@ EL::StatusCode MyxAODAnalysis :: finalize ()
 
   cout << endl;
   cout << "####" << endl;
-  //double A_2e2m = double(m_2e2mfidu4)/double(m_2e2mfidu0);
-  //double A_4e = double(m_4efidu4)/double(m_4efidu0);
-  //double A_4m = double(m_4mfidu4)/double(m_4mfidu0);
   printf("Finalize : %i total events have been processed !\n", m_eventCounter);
   //  printf("Finalize : %i events rejecting tau   !\n", m_filter);
   //  printf("Finalize : %i leptons   !\n\n", m_nlep);
 
-  //  printf(" >>> Finalize : %f 4mu    events have been processed !\n", m_4mfilter);
-  //  printf("Finalize : %f events fiducial0 at truth  !\n", m_4mfidu0);
-  //  printf("Finalize : %f events fiducial1 at truth  !\n", m_4mfidu1);
-  //  printf("Finalize : %f events fiducial2 at truth  !\n", m_4mfidu2);
-  //  printf("Finalize : %f events fiducial3 at truth  !\n", m_4mfidu3);
-  //  printf("Finalize : %f events fiducial4 at truth  !\n", m_4mfidu4);
-  //  printf("Final A factor : %f at truth  !\n", A_4m);
-  //  printf(" >>> Finalize : %f 4e     events have been processed !\n", m_4efilter);
-  //  printf("Finalize : %f events fiducial0 at truth  !\n", m_4efidu0);
-  //  printf("Finalize : %f events fiducial1 at truth  !\n", m_4efidu1);
-  //  printf("Finalize : %f events fiducial2 at truth  !\n", m_4efidu2);
-  //  printf("Finalize : %f events fiducial3 at truth  !\n", m_4efidu3);
-  //  printf("Finalize : %f events fiducial4 at truth  !\n", m_4efidu4);
-  //  printf("Final A factor : %f at truth  !\n", A_4e);
-  //  printf(" >>> Finalize : %f 2e2mu  events have been processed !\n", m_2e2mfilter);
-  //  printf("Finalize : %f events fiducial0 at truth  !\n", m_2e2mfidu0);
-  //  printf("Finalize : %f events fiducial1 at truth  !\n", m_2e2mfidu1);
-  //  printf("Finalize : %f events fiducial2 at truth  !\n", m_2e2mfidu2);
-  //  printf("Finalize : %f events fiducial3 at truth  !\n", m_2e2mfidu3);
-  //  printf("Finalize : %f events fiducial4 at truth  !\n", m_2e2mfidu4);
-  //  printf("Final A factor : %f at truth  !\n", A_2e2m);
   printf("Finalize MyxAODAnalysis !");
   cout << "####" << endl;
   cout << endl;
