@@ -1,15 +1,9 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2019 CERN for the benefit of the ATLAS collaboration
 */
 
-//        Copyright Iowa State University 2014.
-//                  Author: Nils Krumnack
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+/// @author Nils Krumnack
 
-// Please feel free to contact me (nils.erik.krumnack@cern.ch) for bug
-// reports, feature suggestions, praise and complaints.
 
 
 //
@@ -90,10 +84,10 @@ namespace ana
     ATH_CHECK( m_tool.setProperty("ConfigFiles", muMcFiles) );
     ATH_CHECK( m_tool.setProperty("LumiCalcFiles", muDataFiles) );
 
-    // This is now the official recommendation
-    ATH_CHECK( m_tool.setProperty("DataScaleFactor", 1./1.09) );
-    ATH_CHECK( m_tool.setProperty("DataScaleFactorUP", 1.) );
-    ATH_CHECK( m_tool.setProperty("DataScaleFactorDOWN", 1./1.18) );
+    /// To use the default SF for rel21; still keep placeholder
+    //ATH_CHECK( m_tool.setProperty("DataScaleFactor", 1./1.09) );
+    //ATH_CHECK( m_tool.setProperty("DataScaleFactorUP", 1.) );
+    //ATH_CHECK( m_tool.setProperty("DataScaleFactorDOWN", 1./1.18) );
 
     ATH_CHECK( m_tool.initialize() );
 

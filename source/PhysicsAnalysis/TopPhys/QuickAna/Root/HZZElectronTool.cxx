@@ -51,25 +51,19 @@ namespace ana
   {
     ATH_CHECK (ASG_MAKE_ANA_TOOL (m_selectionTool, AsgElectronLikelihoodTool));
     ATH_CHECK (m_selectionTool.setProperty("primaryVertexContainer", "PrimaryVertices"));
-    //std::string config = "ElectronPhotonSelectorTools/offline/mc15_20160512/";
     std::string config = "ElectronPhotonSelectorTools/offline/mc16_20170828/";
     if(m_selection == "VLooseLLH") {
-      //config += "ElectronLikelihoodVeryLooseOfflineConfig2016_Smooth.conf";
       config += "ElectronLikelihoodVeryLooseOfflineConfig2017_Smooth.conf";
     }
     else if(m_selection == "LooseLLH") {
-      //config += "ElectronLikelihoodLooseOfflineConfig2016_Smooth.conf";
       config += "ElectronLikelihoodLooseOfflineConfig2017_Smooth.conf";
     }
     else if(m_selection == "LooseAndBLayerLLH") {
-      //config += "ElectronLikelihoodLooseOfflineConfig2016_CutBL_Smooth.conf";
       config += "ElectronLikelihoodLooseOfflineConfig2017_CutBL_Smooth.conf";
     }
     else if(m_selection == "MediumLLH")
-      //config += "ElectronLikelihoodMediumOfflineConfig2016_Smooth.conf";
       config += "ElectronLikelihoodMediumOfflineConfig2017_Smooth.conf";
     else if(m_selection == "TightLLH")
-      //config += "ElectronLikelihoodTightOfflineConfig2016_Smooth.conf";
       config += "ElectronLikelihoodTightOfflineConfig2017_Smooth.conf";
     else ATH_MSG_ERROR( "Unsupported electron ID: " << m_selection );
     ATH_CHECK (m_selectionTool.setProperty ("ConfigFile", config));
@@ -121,8 +115,39 @@ namespace ana
     cut_Eta.setPassedIf (std::fabs(electron.caloCluster()->etaBE(2)) < 2.47);
 
     cut_Pt.setPassedIf (electron.pt() > 7.e3);
-
-    cut_selectionTool.setPassedIf (m_selectionTool->accept(&electron));
+   // Root::TAccept electron_id_info = m_selectionTool->accept(&electron);
+   // bool passVVLoose = (electron_id_info.getCutResult("NPixel") && electron_id_info.getCutResult("NSilicon"));
+   // cut_ID1.setPassedIf(passVVLoose);
+    if(m_selection == "VLooseLLH") {
+      bool passID = electron.isAvailable<char>("DFCommonElectronsLHVeryLoose") ?
+                    static_cast<bool>(electron.auxdata<char>("DFCommonElectronsLHVeryLoose")) :
+                    static_cast<bool>(m_selectionTool->accept(&electron));
+      cut_selectionTool.setPassedIf ( passID );
+    }
+    else if(m_selection == "LooseLLH") {
+      bool passID = electron.isAvailable<char>("DFCommonElectronsLHLoose") ?
+                    static_cast<bool>(electron.auxdata<char>("DFCommonElectronsLHLoose")) :
+                    static_cast<bool>(m_selectionTool->accept(&electron));
+      cut_selectionTool.setPassedIf ( passID );
+    }
+    else if(m_selection == "LooseAndBLayerLLH") {
+      bool passID = electron.isAvailable<char>("DFCommonElectronsLHLooseBL") ?
+                    static_cast<bool>(electron.auxdata<char>("DFCommonElectronsLHLooseBL")) :
+                    static_cast<bool>(m_selectionTool->accept(&electron));
+      cut_selectionTool.setPassedIf ( passID );
+    }
+    else if(m_selection == "MediumLLH") {
+      bool passID = electron.isAvailable<char>("DFCommonElectronsLHMedium") ?
+                    static_cast<bool>(electron.auxdata<char>("DFCommonElectronsLHMedium")) :
+                    static_cast<bool>(m_selectionTool->accept(&electron));
+      cut_selectionTool.setPassedIf ( passID );
+    }
+    else if(m_selection == "TightLLH") {
+      bool passID = electron.isAvailable<char>("DFCommonElectronsLHTight") ?
+                    static_cast<bool>(electron.auxdata<char>("DFCommonElectronsLHTight")) :
+                    static_cast<bool>(m_selectionTool->accept(&electron));
+      cut_selectionTool.setPassedIf ( passID );
+    }
 
     cut_OQ.setPassedIf( (bool) electron.isGoodOQ(xAOD::EgammaParameters::BADCLUSELECTRON) );
 
@@ -142,26 +167,15 @@ namespace ana
     ATH_CHECK( evtStore()->retrieve( evt, "EventInfo" ) );
     double d0sig = -999.;
     if(electron.trackParticle() && evt) {
-      //d0sig = xAOD::TrackingHelpers::d0significance( electron.trackParticle(),
-      //                                               evt->beamPosSigmaX(),
-      //                                               evt->beamPosSigmaY(),
-      //                                               evt->beamPosSigmaXY() );
-      try
-      {
-        d0sig = xAOD::TrackingHelpers::d0significance( electron.trackParticle(),
-                                                       evt->beamPosSigmaX(),
-                                                       evt->beamPosSigmaY(),
-                                                       evt->beamPosSigmaXY() );
-      }
-      catch(std::exception &e)
-      {
-        std::cerr << "exception when getting d0sig from " << this->name() << ": " << e.what() << ", setting d0sig to default"  << std::endl;
-        d0sig = -999;
-      }
+      d0sig = xAOD::TrackingHelpers::d0significance( electron.trackParticle(),
+                                                     evt->beamPosSigmaX(),
+                                                     evt->beamPosSigmaY(),
+                                                     evt->beamPosSigmaXY() );
     }
     electron.auxdata<double>("d0Sig") = d0sig;
     electron.auxdata<double>("d0value") = d0;
     electron.auxdata<double>("z0value") = z0;
+    electron.auxdata<double>("z0sintheta") = z0sin;
 
     if(m_wp != WPType::_HZZ4l && m_wp != WPType::_SMZZ4l && m_wp != WPType::_DarkPh) {
       cut_D0.setPassedIf (fabs(d0sig)<5.);
@@ -236,6 +250,7 @@ namespace ana
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("smzz4l", makeHZZElectronTool (args, "LooseLLH", WPType::_SMZZ4l))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("smzz4l_veryloose", makeHZZElectronTool (args, "VLooseLLH", WPType::_SMZZ4l))
   QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_loose", makeHZZElectronTool (args, "LooseLLH", WPType::_ZHinv, "Loose"))
-  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_medium", makeHZZElectronTool (args, "MediumLLH", WPType::_ZHinv, "Loose"))
-  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("darkph", makeHZZElectronTool (args, "LooseLLH", WPType::_DarkPh))
+  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_medium", makeHZZElectronTool (args, "MediumLLH", WPType::_ZHinv, "Loose")) 
+  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("hzhinv_tight", makeHZZElectronTool (args, "TightLLH", WPType::_ZHinv, "Loose"))
+  QUICK_ANA_ELECTRON_DEFINITION_MAKER ("darkph", makeHZZElectronTool (args, "VLooseLLH", WPType::_DarkPh))
 }

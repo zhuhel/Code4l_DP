@@ -101,13 +101,13 @@ namespace ana
 
     /// The JVT efficiency tool
     asg::AnaToolHandle<CP::IJetJvtEfficiency> m_jvtEffTool;
-
+    asg::AnaToolHandle<CP::IJetJvtEfficiency> m_fjvtEffTool;
     /// description: the b-tagged jet selection tool
     asg::AnaToolHandle<IBTaggingSelectionTool> m_bsel_tool;
     asg::AnaToolHandle<IBTaggingSelectionTool> m_bsel_OR_tool;
 
-    ///// description: the cleaning tool
-    //asg::AnaToolHandle<IJetSelector> m_cleaning_tool;
+    /// description: the cleaning tool
+    asg::AnaToolHandle<IJetSelector> m_cleaning_tool;
 
     /// @}
 
@@ -145,7 +145,7 @@ namespace ana
     SelectionCut cut_calibration_tool;
     SelectionCut cut_uncertainties_tool;
     SelectionCut cut_smearing_tool;
-    //SelectionCut cut_cleaning_tool;
+    SelectionCut cut_cleaning_tool;
     /// @}
   };
 

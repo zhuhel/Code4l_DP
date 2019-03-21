@@ -58,7 +58,9 @@ atlas_depends_on_subdirs(
    Tools/PathResolver
    Trigger/TrigAnalysis/TrigDecisionTool
    Trigger/TrigAnalysis/TriggerMatchingTool
-   Trigger/TrigConfiguration/TrigConfxAOD )
+   Trigger/TrigConfiguration/TrigConfxAOD
+   PRIVATE
+   Control/AthToolSupport/AsgTools )
 
 # External(s) used by the package:
 find_package( Boost COMPONENTS program_options )
@@ -111,7 +113,7 @@ endif()
 # Executable(s) in the package:
 if( XAOD_STANDALONE )
    foreach( exec quickana_basic quickana_multi_wp quickana_event_data_filler quickana_output
-         quickana_systematics quickana_test_or quickana_truth )
+         quickana_systematics quickana_test_or quickana_truth quickana_pflow )
       atlas_add_executable( ${exec}
          util/${exec}.cxx
          INCLUDE_DIRS ${ROOT_INCLUDE_DIRS}
@@ -137,12 +139,12 @@ endif()
 atlas_add_test( gt_KinSelect
    SOURCES test/gt_KinSelect.cxx
    INCLUDE_DIRS ${GTEST_INCLUDE_DIRS}
-   LINK_LIBRARIES ${GTEST_LIBRARIES} AsgTools xAODJet QuickAnaLib )
+   LINK_LIBRARIES ${GTEST_LIBRARIES} AsgTools AsgTestingLib xAODJet QuickAnaLib )
 
 atlas_add_test( it_BaseTools_test
    SOURCES test/it_BaseTools_test.cxx
    INCLUDE_DIRS ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
-   LINK_LIBRARIES ${GTEST_LIBRARIES} ${Boost_LIBRARIES} AsgTools
+   LINK_LIBRARIES ${GTEST_LIBRARIES} ${Boost_LIBRARIES} AsgTools AsgTestingLib
    AssociationUtilsLib ElectronEfficiencyCorrectionLib
    ElectronPhotonFourMomentumCorrectionLib ElectronPhotonSelectorToolsLib
    IsolationCorrectionsLib IsolationSelectionLib JetCalibToolsLib
@@ -172,16 +174,18 @@ if( XAOD_STANDALONE )
 
    atlas_add_test( ut_event_data_filler SCRIPT test/ut_event_data_filler.sh )
    atlas_add_test( ut_eventloop_example SCRIPT test/ut_eventloop_example.sh )
-   atlas_add_test( ut_python SCRIPT test/ut_python.py )
+   atlas_add_test( ut_python SCRIPT test/ut_python.py PROPERTIES TIMEOUT 600 )
    atlas_add_test( ut_python_no_qa SCRIPT test/ut_python_no_qa.py )
-   atlas_add_test( ut_quickana_basic SCRIPT test/ut_quickana_basic.sh )
+   atlas_add_test( ut_quickana_basic SCRIPT test/ut_quickana_basic.sh PROPERTIES TIMEOUT 600 )
+   atlas_add_test( ut_quickana_pflow SCRIPT test/ut_quickana_pflow.sh PROPERTIES TIMEOUT 600 )
    atlas_add_test( ut_quickana_hammercloud
-      SCRIPT test/ut_quickana_hammercloud.sh )
+      SCRIPT test/ut_quickana_hammercloud.sh PROPERTIES TIMEOUT 600 )
    atlas_add_test( ut_quickana_multi_wp SCRIPT test/ut_quickana_multi_wp.sh )
-   atlas_add_test( ut_quickana_optimized SCRIPT test/ut_quickana_optimized.sh )
-   atlas_add_test( ut_quickana_output SCRIPT test/ut_quickana_output.sh )
-   atlas_add_test( ut_quickana_trigger SCRIPT test/ut_quickana_trigger.sh )
-   atlas_add_test( ut_quickana_validate SCRIPT test/ut_quickana_validate.sh )
+   atlas_add_test( ut_quickana_optimized SCRIPT test/ut_quickana_optimized.sh PROPERTIES TIMEOUT 600 )
+   #atlas_add_test( ut_quickana_output SCRIPT test/ut_quickana_output.sh PROPERTIES TIMEOUT 600 )
+   #atlas_add_test( ut_quickana_no_output SCRIPT test/ut_quickana_no_output.sh PROPERTIES TIMEOUT 600 )
+   atlas_add_test( ut_quickana_trigger SCRIPT test/ut_quickana_trigger.sh PROPERTIES TIMEOUT 600 )
+   atlas_add_test( ut_quickana_validate SCRIPT test/ut_quickana_validate.sh PROPERTIES TIMEOUT 600 )
    atlas_add_test( ut_quickana_validate_electron
       SCRIPT test/ut_quickana_validate_electron.sh )
    atlas_add_test( ut_quickana_validate_jet

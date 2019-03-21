@@ -1,19 +1,13 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2019 CERN for the benefit of the ATLAS collaboration
 */
+
+/// @author Nils Krumnack
+
+
 
 #ifndef QUICK_ANA__MET_TOOL_H
 #define QUICK_ANA__MET_TOOL_H
-
-//        Copyright Iowa State University 2014.
-//                  Author: Nils Krumnack
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
-
-// Please feel free to contact me (nils.erik.krumnack@cern.ch) for bug
-// reports, feature suggestions, praise and complaints.
-
 
 //
 // This module declares the MetTool for calculating the MissingET and its
@@ -32,6 +26,7 @@
 class IMETMaker;
 class IMETSystematicsTool;
 class IJetModifier;
+class IMETSignificance;
 
 namespace ana
 {
@@ -102,6 +97,7 @@ namespace ana
 
     /// Configurations -- tool properties
 
+    bool m_doPFlow;
     bool m_includeTauTerm;
     bool m_doTST;
     bool m_doJVTCut;
@@ -112,12 +108,14 @@ namespace ana
     double m_uniqueFrac;
     double m_jetCut;
     bool m_doFJVT;
+    bool m_doPUmetsig;
 
   private:
 
     /// description: the MET tool
     asg::AnaToolHandle<IMETMaker> m_metutil;
     asg::AnaToolHandle<IMETSystematicsTool> m_metSystTool;
+    asg::AnaToolHandle<IMETSignificance> m_metSigni;
     /// description: the fJVT tool
     asg::AnaToolHandle<IJetModifier> m_fjvtTool;
 

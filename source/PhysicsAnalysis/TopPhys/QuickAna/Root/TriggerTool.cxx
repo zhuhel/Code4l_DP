@@ -699,6 +699,20 @@ namespace ana
     makeTriggerTool (args, "HLT_mu11_nomucomb_2mu4noL1_nscan03_L1MU11_2MU6", "HLT_mu11_nomucomb_2mu4noL1_nscan03_L1MU11_2MU6", "", false, true))
   QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_mu20_msonly_mu10noL1_msonly_nscan05_noComb",
     makeTriggerTool (args, "HLT_mu20_msonly_mu10noL1_msonly_nscan05_noComb", "HLT_mu20_msonly_mu10noL1_msonly_nscan05_noComb", "", false, true))
+    // New Trigger for 2017
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_mu22_mu8noL1_calotag_0eta010",
+    makeTriggerTool (args, "HLT_mu22_mu8noL1_calotag_0eta010", "HLT_mu22_mu8noL1_calotag_0eta010", "", false, true))
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_4mu4",
+    makeTriggerTool (args, "HLT_4mu4", "HLT_4mu4", "", false, true))
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_2e17_lhvloose_nod0_L12EM15VHI",
+    makeTriggerTool (args, "HLT_2e17_lhvloose_nod0_L12EM15VHI", "HLT_2e17_lhvloose_nod0_L12EM15VHI", "", true, false))
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_2e24_lhvloose_nod0",
+    makeTriggerTool (args, "HLT_2e24_lhvloose_nod0", "HLT_2e24_lhvloose_nod0", "", true, false))
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_e26_lhmedium_nod0_mu8noL1",
+    makeTriggerTool (args, "HLT_e26_lhmedium_nod0_mu8noL1", "HLT_e26_lhmedium_nod0_mu8noL1", "", true, true))
+  QUICK_ANA_TRIGGER_DEFINITION_MAKER ("HLT_e24_lhvloose_nod0_2e12_lhvloose_nod0_L1EM20VH_3EM10VH",
+    makeTriggerTool (args, "HLT_e24_lhvloose_nod0_2e12_lhvloose_nod0_L1EM20VH_3EM10VH", "HLT_e24_lhvloose_nod0_2e12_lhvloose_nod0_L1EM20VH_3EM10VH", "", true, false))
+    
 
 
 

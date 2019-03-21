@@ -131,6 +131,8 @@ class AnalysisVar {
     vector<string> CHN;       
 
     //<Define analysis steps / cut steps>
+    vector<string> Background;
+    vector<string> Ztype;
     vector<string> STEP_cut; // For event selection
     //MapType_VString STEP_cut; // For event selection
     MapType_VString STEP_obj; // For object selection
@@ -192,6 +194,7 @@ class AnalysisVar {
     MapType2_Long  TreeLngVar;
     MapType2_Bool  TreeBoolVar;
     MapType2_VFloat TreeFltVVar;
+    MapType2_VDouble TreeDouVVar;
     MapType2_VInt TreeIntVVar;
     MapType2_TLorentzVector  TreeTLVVar;
     MapType2_VTLorentzVector  TreeTLVVVar;

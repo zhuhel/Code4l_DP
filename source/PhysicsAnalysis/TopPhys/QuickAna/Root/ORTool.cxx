@@ -38,6 +38,7 @@ namespace ana
     declareProperty("JVTPriorities", m_jvtPriorities=false);
     declareProperty("ApplyRelPt", m_applyRelPt=false);
     declareProperty("OnlyRejJets", m_onlyRejJets=false);
+    declareProperty("OnlyVBS4l", m_onlyVBS4l=false);
   }
 
   //---------------------------------------------------------------------------
@@ -79,9 +80,9 @@ namespace ana
     ATH_CHECK( m_orToolBox.muJetORT.setProperty("ApplyRelPt", m_applyRelPt) );
 
     // only remove jets, in early RUN2, this only works for HIGG2DX derivation
-    if(m_onlyRejJets) {
-      //ATH_CHECK( m_orToolBox.eleEleORT.setProperty("UseClusterMatch", true) );
-      ATH_CHECK( m_orToolBox.eleEleORT.setProperty("UseClusterMatch", false) );
+    if (m_onlyRejJets) {
+      if (m_onlyVBS4l) ATH_CHECK( m_orToolBox.eleEleORT.setProperty("UseClusterMatch", false) );
+      else             ATH_CHECK( m_orToolBox.eleEleORT.setProperty("UseClusterMatch", true) );
       ATH_CHECK( m_orToolBox.eleJetORT.setProperty("OuterDR", 0.) );
       ATH_CHECK( m_orToolBox.muJetORT.setProperty("OuterDR", 0.) );
     }
@@ -131,7 +132,7 @@ namespace ana
   inputTypes() const
   {
     return (1 << OBJECT_ELECTRON) | (1 << OBJECT_MUON) | (1 << OBJECT_JET) |
-           (1 << OBJECT_TAU) | (1 << OBJECT_PHOTON);
+           (1 << OBJECT_TAU) | (1 << OBJECT_PHOTON) | (1 << OBJECT_PFLOW_JET);
   }
   //---------------------------------------------------------------------------
   unsigned ORTool ::
@@ -164,23 +165,37 @@ namespace ana
           if (jvtAcc(*j)) inAcc(*j) = inAcc(*j)*2;
         }
       }
+      if (objects.pflow_jets()){
+        SG::AuxElement::Accessor<SelectType> jvtAcc("Jvt_pass");
+        for (auto j : *objects.pflow_jets()){
+          if (jvtAcc(*j)) inAcc(*j) = inAcc(*j)*2;
+        }
+      }
+
     }
 
     auto& orTool = m_orToolBox.masterTool;
-    ATH_CHECK( orTool->removeOverlaps(objects.electrons(), objects.muons(),
-                                      objects.jets(), objects.taus(),
-                                      objects.photons()) );
+    if (objects.jets())
+       ATH_CHECK( orTool->removeOverlaps(objects.electrons(), objects.muons(),
+                                         objects.jets(), objects.taus(),
+                                         objects.photons()) );
+    if (objects.pflow_jets())
+       ATH_CHECK( orTool->removeOverlaps(objects.electrons(), objects.muons(),
+                                         objects.pflow_jets(), objects.taus(),
+                                         objects.photons()) );
+
 
     //
     // Post-processing: if "overlaps" is true, set selection flag to false
     //
     SG::AuxElement::Accessor<SelectType> selectAcc(m_anaSelectionName);
     SG::AuxElement::ConstAccessor<SelectType> overlapAcc(m_orFlags.outputLabel);
+    SG::AuxElement::Accessor<SelectType> orPassAcc("OR_pass");
 
     // List of containers to process.
     std::vector< xAOD::IParticleContainer* > containers {
       objects.electrons(), objects.muons(), objects.jets(),
-      objects.taus(), objects.photons()
+      objects.pflow_jets(), objects.taus(), objects.photons()
     };
 
     // Process all containers in one go!
@@ -189,7 +204,9 @@ namespace ana
         for (auto par : *contPtr) {
           if (overlapAcc(*par)) {
             selectAcc(*par) = false;
-          }
+            orPassAcc(*par) = false;
+          }else
+            orPassAcc(*par) = true;
         }
       }
     }
@@ -212,7 +229,8 @@ namespace
                         const std::string& boostedLeptons = "",
                         const bool useJVT = false,
                         const bool applyRelPt = false,
-                        const bool onlyRejJets = false)
+                        const bool onlyRejJets = false,
+                        const bool onlyVBS4l   = false)
   {
     using namespace ana::msgObjectDefinition;
 
@@ -229,6 +247,7 @@ namespace
     ANA_CHECK( orTool->setProperty("JVTPriorities", useJVT) );
     ANA_CHECK( orTool->setProperty("ApplyRelPt", applyRelPt) );
     ANA_CHECK( orTool->setProperty("OnlyRejJets", onlyRejJets) );
+    ANA_CHECK( orTool->setProperty("OnlyVBS4l", onlyVBS4l) );
     args.add( std::move(orTool) );
 
     return StatusCode::SUCCESS;
@@ -243,7 +262,8 @@ namespace
   QUICK_ANA_OR_DEFINITION_MAKER( "boostedHF_JVT", makeORTool(args, "bjet_OR", "both", true) )
   QUICK_ANA_OR_DEFINITION_MAKER( "boostedMuHF_JVT", makeORTool(args, "bjet_OR", "muon", true) )
   QUICK_ANA_OR_DEFINITION_MAKER( "zzllvv", makeORTool(args, "", "", true, true) )
-  //QUICK_ANA_OR_DEFINITION_MAKER( "zzllll", makeORTool(args, "", "", true, true, true) )
-  QUICK_ANA_OR_DEFINITION_MAKER( "zzllll", makeORTool(args, "", "", false, true, true) )
+  QUICK_ANA_OR_DEFINITION_MAKER( "zzllvv_nojvt", makeORTool(args, "", "", false, true) )
+  QUICK_ANA_OR_DEFINITION_MAKER( "zzllll", makeORTool(args, "", "", true, true, true) )
+  QUICK_ANA_OR_DEFINITION_MAKER( "vbs_4l", makeORTool(args, "", "", true, true, true, true) )
 
 } // anonymous namespace

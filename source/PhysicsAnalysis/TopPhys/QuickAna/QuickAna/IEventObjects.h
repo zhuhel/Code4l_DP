@@ -148,6 +148,14 @@ namespace ana
     ///   no-fail
   public:
     xAOD::JetContainer *jets () const;
+  public:
+    xAOD::JetContainer *truthjets () const;
+
+    /// \brief the pflow jet container
+    /// \par Guarantee
+    ///   no-fail
+  public:
+    xAOD::JetContainer *pflow_jets () const;
 
 
     /// \brief the fat jet container
