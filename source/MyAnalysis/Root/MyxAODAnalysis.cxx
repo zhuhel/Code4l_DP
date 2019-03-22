@@ -1228,6 +1228,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         if(passJet) {
           jetInfo.index = index_jet;
           jet->auxdata<int>("index") = index_jet;
+          jetInfo.isbjet77 = jet->auxdata<char>("bjet");
+          jetInfo.isbjet85 = jet->auxdata<char>("bjet_OR");
 
           //if(jet->auxdata<char>("ana_select_cleaning_tool"))
           //  DoCounting(sysname, CNT_obj, "jet", "Clean");
@@ -1569,6 +1571,8 @@ EL::StatusCode MyxAODAnalysis :: execute ()
         }
         for(int i=0; i<goodj.size(); i++) {
           TreeTLVVVar["v_tlv_J"]["Value"].push_back((goodj[i].L));
+          TreeIntVVar["v_isBjet77"]["Value"].push_back((goodj[i].isbjet77));
+          TreeIntVVar["v_isBjet85"]["Value"].push_back((goodj[i].isbjet85));
         }
 
         // Triggers

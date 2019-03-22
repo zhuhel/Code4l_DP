@@ -131,10 +131,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     
     
     m_grl = new GoodRunsListSelectionTool("GoodRunsListSelectionTool");
-    //const char* GRLFilePath_2015 = "GoodRunsLists/data15_13TeV/20160720/data15_13TeV.periodAllYear_DetStatus-v79-repro20-02_DQDefects-00-02-02_PHYS_StandardGRL_All_Good_25ns.xml";
     const char* GRLFilePath_2015 = "GoodRunsLists/data15_13TeV/20170619/data15_13TeV.periodAllYear_DetStatus-v89-pro21-02_Unknown_PHYS_StandardGRL_All_Good_25ns.xml";
     const char* fullGRLFilePath_2015 = gSystem->ExpandPathName (GRLFilePath_2015);
-    //const char* GRLFilePath_2016 = "GoodRunsLists/data16_13TeV/20170720/data16_13TeV.periodAllYear_DetStatus-v88-pro20-21_DQDefects-00-02-04_PHYS_StandardGRL_All_Good_25ns.xml";
     const char* GRLFilePath_2016 = "GoodRunsLists/data16_13TeV/20180129/data16_13TeV.periodAllYear_DetStatus-v89-pro21-01_DQDefects-00-02-04_PHYS_StandardGRL_All_Good_25ns.xml";
     const char* fullGRLFilePath_2016 = gSystem->ExpandPathName (GRLFilePath_2016);
     const char* GRLFilePath_2017 = "GoodRunsLists/data17_13TeV/20171130/data17_13TeV.periodAllYear_DetStatus-v97-pro21-13_Unknown_PHYS_StandardGRL_All_Good_25ns_Triggerno17e33prim.xml";
@@ -174,8 +172,8 @@ EL::StatusCode MyxAODAnalysis :: initialize ()
     quickAna->muonDef="darkph hzhinv_loose hzhinv_medium darkph_tight";
     quickAna->electronDef="darkph hzhinv_loose hzhinv_medium hzhinv_tight";
     quickAna->jetKine = "pt > 30e3 && eta < 4.5 && eta >-4.5";
-    quickAna->jetDef="antikt04_noBtag"; // no btag
-   // quickAna->jetDef="antikt04_HZZ"; // btag setup in HZZ analysis
+    //quickAna->jetDef="antikt04_noBtag"; // no btag
+    quickAna->jetDef="antikt04_darkph"; 
     quickAna->truthjetDef="truthWZ"; //truth jet is required by JVT and FJVT SF
     quickAna->photonDef="none";
     quickAna->tauDef="none";
