@@ -80,7 +80,7 @@ namespace ana
       m_smearing_tool ("smearing", this),
       m_jvt_tool ("jvt", this),
       m_jvtEffTool("jvt_eff", this),
-    m_fjvtEffTool("fjvt_eff", this),
+      m_fjvtEffTool("fjvt_eff", this),
       m_bsel_tool ("btag", this),
       m_bsel_OR_tool ("btag_OR", this),
       m_cleaning_tool ("cleaning", this)
@@ -602,6 +602,10 @@ namespace ana
   QUICK_ANA_JET_DEFINITION_MAKER ("antikt04_HZZ",
     makeJetTool (args, "AntiKt4EMTopoJets", SelectionStep::ANALYSIS,
                  "FixedCutBEff_85"))
+
+  QUICK_ANA_JET_DEFINITION_MAKER ("antikt04_darkph",
+    makeJetTool (args, "AntiKt4EMTopoJets", SelectionStep::ANALYSIS,
+                 "FixedCutBEff_77"))
 
   QUICK_ANA_JET_DEFINITION_MAKER( "AntiKt4EMTopo_SUSY",
     makeJetTool (args, "AntiKt4EMTopoJets", SelectionStep::ANALYSIS,

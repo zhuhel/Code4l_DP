@@ -89,6 +89,7 @@ class OBJ_JET : public OBJ{
   public:
     double pt_em, eta_em, phi_em, m_em;
     double isbad, jes, isugly, islooserbad;
+    int isbjet77, isbjet85;
     double vtxf, fmax, smax;
     TLorentzVector LEM;
     TVector3 L3;

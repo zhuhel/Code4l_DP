@@ -6,6 +6,8 @@ Float_t  mu
 #Jets
 Int_t    nJet
 vector<TLV> v_tlv_J
+vector<I> v_isBjet77
+vector<I> v_isBjet85
 
 #Leptons
 Int_t    nLep
